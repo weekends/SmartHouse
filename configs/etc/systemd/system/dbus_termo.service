@@ -1,0 +1,18 @@
+[Unit]
+Description=SmartHouse 1wire Termometers to DBus converter
+After=dbus.service smarthouse_owfs.service smarthouse_owfs_mount.service
+
+[Service]
+Type=dbus
+BusName=su.bagna.termo
+WorkingDirectory=/opt/SmartHouse
+ExecStart=/opt/SmartHouse/dbus_termo.py
+ExecReload=/bin/kill -9 $MAINPID
+NotifyAccess=main
+#WatchdogSec=10
+Restart=on-failure
+LimitNPROC=1
+
+[Install]
+WantedBy=multi-user.target
+Alias=dbus_termo.service

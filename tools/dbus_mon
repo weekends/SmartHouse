@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Monitor GPIO signals
+dbus-monitor --system "type='signal',sender='su.bugna.gpio',interface='su.bugna.gpio',path='/su/bugna/gpio'"

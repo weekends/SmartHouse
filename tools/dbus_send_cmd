@@ -1,0 +1,8 @@
+#!/bin/sh
+
+CMD=$1
+shift
+ARGS=$@
+
+# For int args use int16:value
+dbus-send --type=method_call --print-reply --system --dest=su.bagna.gpio /su/bagna/gpio su.bagna.gpio.$CMD $ARGS

@@ -1,0 +1,365 @@
+/*
+ * Copyright (C) 2012 Texas Instruments Incorporated - http://www.ti.com/
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+/dts-v1/;
+
+#include "am33xx.dtsi"
+#include "am335x-bone-common-smarthouse.dtsi"
+#include "am335x-bone-common-universal-pins.dtsi"
+/* #include "am335x-bone-common-universal.dtsi" */
+
+/* #include "am335x-bone-jtag.dtsi" */
+
+/ {
+	model = "TI AM335x BeagleBone Black";
+	compatible = "ti,am335x-bone-black", "ti,am335x-bone", "ti,am33xx";
+
+	exclusive-use =
+                /* the pin header uses */
+                "P9.20",        /* i2c2_sda */
+                "P9.19",        /* i2c2_scl */
+                /* the hardware ip uses */
+                "i2c2";
+};
+
+&ldo3_reg {
+	regulator-min-microvolt = <1800000>;
+	regulator-max-microvolt = <1800000>;
+	regulator-always-on;
+};
+
+&mmc1 {
+	vmmc-supply = <&vmmcsd_fixed>;
+};
+
+&mmc2 {
+	vmmc-supply = <&vmmcsd_fixed>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&emmc_pins>;
+	bus-width = <8>;
+	status = "okay";
+};
+
+&cpu0_opp_table {
+	/*
+	 * All PG 2.0 silicon may not support 1GHz but some of the early
+	 * BeagleBone Blacks have PG 2.0 silicon which is guaranteed
+	 * to support 1GHz OPP so enable it for PG 2.0 on this board.
+	 */
+	oppnitro@1000000000 {
+		opp-supported-hw = <0x06 0x0100>;
+	};
+};
+
+&am33xx_pinmux {
+	mcasp0_pins: mcasp0_pins {
+		pinctrl-single,pins = <
+			AM33XX_IOPAD(0x9ac, PIN_INPUT_PULLUP | MUX_MODE0) /* mcasp0_ahcklx.mcasp0_ahclkx */
+			AM33XX_IOPAD(0x99c, PIN_OUTPUT_PULLDOWN | MUX_MODE2) /* mcasp0_ahclkr.mcasp0_axr2*/
+			AM33XX_IOPAD(0x994, PIN_OUTPUT_PULLUP | MUX_MODE0) /* mcasp0_fsx.mcasp0_fsx */
+			AM33XX_IOPAD(0x990, PIN_OUTPUT_PULLDOWN | MUX_MODE0) /* mcasp0_aclkx.mcasp0_aclkx */
+			AM33XX_IOPAD(0x86c, PIN_OUTPUT_PULLDOWN | MUX_MODE7) /* gpmc_a11.GPIO1_27 */
+		>;
+	};
+};
+
+&i2c1 {
+    /* i2c1 is numbered correctly */
+    status = "okay";
+    clock-frequency = <400000>;
+    pinctrl-names = "default";
+    pinctrl-0 = <&i2c1_pins>;
+};
+
+&i2c2 {
+    /* i2c1 is numbered correctly */
+    status = "okay";
+    clock-frequency = <400000>;
+    pinctrl-names = "default";
+    pinctrl-0 = <&i2c2_pins>;
+};
+
+/ {
+        i2c3 {
+                compatible = "i2c-gpio";
+                gpios = <&gpio2 2 GPIO_ACTIVE_HIGH /* sda */
+                         &gpio2 5 GPIO_ACTIVE_HIGH /* scl */
+                >;
+                i2c-gpio,delay-us = <2>;        /* ~100 kHz */
+                #address-cells = <1>;
+                #size-cells = <0>;
+                pinctrl-names = "default";
+                pinctrl-0 = <&i2c3_pins>;
+                status = "okay";
+
+                rtc@68 {
+                        compatible = "maxim,ds1307";
+                        reg = <0x68>;
+                };
+
+                rtc_eeprom: rtc_eeprom@50 {
+                        compatible = "at,24c32";
+                        reg = <0x50>;
+                };
+        };
+
+    aliases {
+		eeprom0 = &cape_eeprom0;
+		eeprom1 = &cape_eeprom1;
+		eeprom2 = &cape_eeprom2;
+		eeprom3 = &cape_eeprom3;
+		eeprom4 = &cape_eeprom4;
+		eeprom5 = &cape_eeprom5;
+		eeprom6 = &cape_eeprom6;
+		eeprom7 = &cape_eeprom7;
+		eeprom8 = &cape_eeprom8;
+	};
+
+};
+
+#include "am335x-bone-pinmux-ttyS5.dtsi"
+&uart5 {
+    pinctrl-0 = <&uart5_pins>;
+    status = "okay";
+};
+
+&mcasp0	{
+	#sound-dai-cells = <0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&mcasp0_pins>;
+	status = "okay";
+	op-mode = <0>;	/* MCASP_IIS_MODE */
+	tdm-slots = <2>;
+	serial-dir = <	/* 0: INACTIVE, 1: TX, 2: RX */
+			0 0 1 0
+		>;
+	tx-num-evt = <32>;
+	rx-num-evt = <32>;
+};
+
+&sgx {
+	status = "okay";
+};
+
+/ {
+	clk_mcasp0_fixed: clk_mcasp0_fixed {
+		#clock-cells = <0>;
+		compatible = "fixed-clock";
+		clock-frequency = <24576000>;
+	};
+
+	clk_mcasp0: clk_mcasp0 {
+		#clock-cells = <0>;
+		compatible = "gpio-gate-clock";
+		clocks = <&clk_mcasp0_fixed>;
+		enable-gpios = <&gpio1 27 0>; /* BeagleBone Black Clk enable on GPIO1_27 */
+	};
+};
+
+&ocp {
+    P8_19_pinmux {
+        compatible = "bone-pinmux-helper";
+        status = "okay";
+        pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "pwm";
+        pinctrl-0 = <&P8_19_default_pin>;
+        pinctrl-1 = <&P8_19_gpio_pin>;
+        pinctrl-2 = <&P8_19_gpio_pu_pin>;
+        pinctrl-3 = <&P8_19_gpio_pd_pin>;
+        pinctrl-4 = <&P8_19_pwm_pin>;
+    };
+
+    P8_26_pinmux {
+        compatible = "bone-pinmux-helper";
+        status = "okay";
+        pinctrl-names = "default", "gpio";
+        pinctrl-0 = <&P8_26_default_pin>;
+        pinctrl-1 = <&P8_26_gpio_pin>;
+        pinctrl-2 = <&P8_26_gpio_pu_pin>;
+        pinctrl-3 = <&P8_26_gpio_pd_pin>;
+    };
+
+    P8_27_pinmux {
+        compatible = "bone-pinmux-helper";
+        status = "okay";
+        pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "pruout", "pruin", "hdmi";
+        pinctrl-0 = <&P8_27_default_pin>;
+        pinctrl-1 = <&P8_27_gpio_pin>;
+        pinctrl-2 = <&P8_27_gpio_pu_pin>;
+        pinctrl-3 = <&P8_27_gpio_pd_pin>;
+        pinctrl-4 = <&P8_27_pruout_pin>;
+        pinctrl-5 = <&P8_27_pruin_pin>;
+        pinctrl-6 = <&P8_27_hdmi_pin>;
+    };
+
+    P8_28_pinmux {
+        compatible = "bone-pinmux-helper";
+        status = "okay";
+        pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "pruout", "pruin", "hdmi";
+        pinctrl-0 = <&P8_28_default_pin>;
+        pinctrl-1 = <&P8_28_gpio_pin>;
+        pinctrl-2 = <&P8_28_gpio_pu_pin>;
+        pinctrl-3 = <&P8_28_gpio_pd_pin>;
+        pinctrl-4 = <&P8_28_pruout_pin>;
+        pinctrl-5 = <&P8_28_pruin_pin>;
+        pinctrl-6 = <&P8_28_hdmi_pin>;
+    };
+
+    P8_29_pinmux {
+        compatible = "bone-pinmux-helper";
+        status = "okay";
+        pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "pruout", "pruin", "hdmi";
+        pinctrl-0 = <&P8_29_default_pin>;
+        pinctrl-1 = <&P8_29_gpio_pin>;
+        pinctrl-2 = <&P8_29_gpio_pu_pin>;
+        pinctrl-3 = <&P8_29_gpio_pd_pin>;
+        pinctrl-4 = <&P8_29_pruout_pin>;
+        pinctrl-5 = <&P8_29_pruin_pin>;
+        pinctrl-6 = <&P8_29_hdmi_pin>;
+    };
+
+    P8_30_pinmux {
+        compatible = "bone-pinmux-helper";
+        status = "okay";
+        pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "pruout", "pruin", "hdmi";
+        pinctrl-0 = <&P8_30_default_pin>;
+        pinctrl-1 = <&P8_30_gpio_pin>;
+        pinctrl-2 = <&P8_30_gpio_pu_pin>;
+        pinctrl-3 = <&P8_30_gpio_pd_pin>;
+        pinctrl-4 = <&P8_30_pruout_pin>;
+        pinctrl-5 = <&P8_30_pruin_pin>;
+        pinctrl-6 = <&P8_30_hdmi_pin>;
+    };
+
+    P8_31_pinmux {
+        compatible = "bone-pinmux-helper";
+        status = "okay";
+        pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd","uart", "hdmi";
+        pinctrl-0 = <&P8_31_default_pin>;
+        pinctrl-1 = <&P8_31_gpio_pin>;
+        pinctrl-2 = <&P8_31_gpio_pu_pin>;
+        pinctrl-3 = <&P8_31_gpio_pd_pin>;
+        pinctrl-4 = <&P8_31_uart_pin>;
+        pinctrl-5 = <&P8_31_hdmi_pin>;
+    };
+
+    P8_32_pinmux {
+        compatible = "bone-pinmux-helper";
+        status = "okay";
+        pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "hdmi";
+        pinctrl-0 = <&P8_32_default_pin>;
+        pinctrl-1 = <&P8_32_gpio_pin>;
+        pinctrl-2 = <&P8_32_gpio_pu_pin>;
+        pinctrl-3 = <&P8_32_gpio_pd_pin>;
+        pinctrl-4 = <&P8_32_hdmi_pin>;
+    };
+
+    P8_34_pinmux {
+        compatible = "bone-pinmux-helper";
+        status = "okay";
+        pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd","pwm", "hdmi";
+        pinctrl-0 = <&P8_34_default_pin>;
+        pinctrl-1 = <&P8_34_gpio_pin>;
+        pinctrl-2 = <&P8_34_gpio_pu_pin>;
+        pinctrl-3 = <&P8_34_gpio_pd_pin>;
+        pinctrl-4 = <&P8_34_pwm_pin>;
+        pinctrl-5 = <&P8_34_hdmi_pin>;
+    };
+
+    P8_36_pinmux {
+        compatible = "bone-pinmux-helper";
+        status = "okay";
+        pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd","pwm", "hdmi";
+        pinctrl-0 = <&P8_36_default_pin>;
+        pinctrl-1 = <&P8_36_gpio_pin>;
+        pinctrl-2 = <&P8_36_gpio_pu_pin>;
+        pinctrl-3 = <&P8_36_gpio_pd_pin>;
+        pinctrl-4 = <&P8_36_pwm_pin>;
+        pinctrl-5 = <&P8_36_hdmi_pin>;
+    };
+
+    P8_39_pinmux {
+        compatible = "bone-pinmux-helper";
+        status = "okay";
+        pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "pruout", "pruin", "hdmi";
+        pinctrl-0 = <&P8_39_default_pin>;
+        pinctrl-1 = <&P8_39_gpio_pin>;
+        pinctrl-2 = <&P8_39_gpio_pu_pin>;
+        pinctrl-3 = <&P8_39_gpio_pd_pin>;
+        pinctrl-4 = <&P8_39_pruout_pin>;
+        pinctrl-5 = <&P8_39_pruin_pin>;
+        pinctrl-6 = <&P8_39_hdmi_pin>;
+    };
+
+    P8_40_pinmux {
+        compatible = "bone-pinmux-helper";
+        status = "okay";
+        pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "pruout", "pruin", "hdmi";
+        pinctrl-0 = <&P8_40_default_pin>;
+        pinctrl-1 = <&P8_40_gpio_pin>;
+        pinctrl-2 = <&P8_40_gpio_pu_pin>;
+        pinctrl-3 = <&P8_40_gpio_pd_pin>;
+        pinctrl-4 = <&P8_40_pruout_pin>;
+        pinctrl-5 = <&P8_40_pruin_pin>;
+        pinctrl-6 = <&P8_40_hdmi_pin>;
+    };
+
+    P8_41_pinmux {
+        compatible = "bone-pinmux-helper";
+        status = "okay";
+        pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "pruout", "pruin", "hdmi";
+        pinctrl-0 = <&P8_41_default_pin>;
+        pinctrl-1 = <&P8_41_gpio_pin>;
+        pinctrl-2 = <&P8_41_gpio_pu_pin>;
+        pinctrl-3 = <&P8_41_gpio_pd_pin>;
+        pinctrl-4 = <&P8_41_pruout_pin>;
+        pinctrl-5 = <&P8_41_pruin_pin>;
+        pinctrl-6 = <&P8_41_hdmi_pin>;
+    };
+
+    P8_42_pinmux {
+        compatible = "bone-pinmux-helper";
+        status = "okay";
+        pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "pruout", "pruin", "hdmi";
+        pinctrl-0 = <&P8_42_default_pin>;
+        pinctrl-1 = <&P8_42_gpio_pin>;
+        pinctrl-2 = <&P8_42_gpio_pu_pin>;
+        pinctrl-3 = <&P8_42_gpio_pd_pin>;
+        pinctrl-4 = <&P8_42_pruout_pin>;
+        pinctrl-5 = <&P8_42_pruin_pin>;
+        pinctrl-6 = <&P8_42_hdmi_pin>;
+    };
+
+    P8_43_pinmux {
+        compatible = "bone-pinmux-helper";
+        status = "okay";
+        pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "pruout", "pruin","pwm", "hdmi";
+        pinctrl-0 = <&P8_43_default_pin>;
+        pinctrl-1 = <&P8_43_gpio_pin>;
+        pinctrl-2 = <&P8_43_gpio_pu_pin>;
+        pinctrl-3 = <&P8_43_gpio_pd_pin>;
+        pinctrl-4 = <&P8_43_pruout_pin>;
+        pinctrl-5 = <&P8_43_pruin_pin>;
+        pinctrl-6 = <&P8_43_pwm_pin>;
+        pinctrl-7 = <&P8_43_hdmi_pin>;
+    };
+
+    P8_44_pinmux {
+        compatible = "bone-pinmux-helper";
+        status = "okay";
+        pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "pruout", "pruin","pwm", "hdmi";
+        pinctrl-0 = <&P8_44_default_pin>;
+        pinctrl-1 = <&P8_44_gpio_pin>;
+        pinctrl-2 = <&P8_44_gpio_pu_pin>;
+        pinctrl-3 = <&P8_44_gpio_pd_pin>;
+        pinctrl-4 = <&P8_44_pruout_pin>;
+        pinctrl-5 = <&P8_44_pruin_pin>;
+        pinctrl-6 = <&P8_44_pwm_pin>;
+        pinctrl-7 = <&P8_44_hdmi_pin>;
+    };
+
+
+};
