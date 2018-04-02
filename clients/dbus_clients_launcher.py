@@ -17,40 +17,14 @@ import daemon
 import logging
 logging.basicConfig(level = logging.INFO)
 
-"""
-Ванная 1 этаж, выключатель в коридоре:	  173, Лампа: 47
-Ванная 1 этаж, выключатель в постирочной: 185, Лампа: 38
-
-Спальня 1 этаж, выключатель на входе 1:	164, Лампа: 54
-Спальня 1 этаж, выключатель на входе 2: 168, Лампа: 52, Длинное нажатее отключает Лампу: 54
-Спальня 1 этаж, выключатель по центру:	167, Лампа: 52, Длинное нажатее отключает Лампу: 54
-"""
 
 threads = {}
 functions = []
 
-def Prepare_Trigger_OnOff():
-	from dbus_client_logic import Trigger_OnOff
-	cfg = [
-		[ [164], 54 ]
-	]
-	for inputs, output in cfg:
-		functions.append( Trigger_OnOff( inputs, output ).run )
-
-def Prepare_Trigger_Bathroom():
-	from dbus_client_logic import Trigger_Bathroom
-	functions.append( Trigger_Bathroom( [173, 185], [47, 38] ).run )
-
-def Prepare_Trigger_OnOff_LongOff():
-	from dbus_client_logic import Trigger_OnOff_LongOff
-	functions.append( Trigger_OnOff_LongOff( [168, 167], [52, 54] ).run )
-
-
-def Start_Functions():
-	for function in functions:
-		thread = threading.Thread( target=function )
-		thread.start()
-		threads[function] = thread
+def Start_Function(function):
+    thread = threading.Thread( target=function )
+    thread.start()
+    threads[function] = thread
 
 def restart_program():
 	"""Restarts the current program, with file objects and descriptors cleanup"""
@@ -94,10 +68,11 @@ if __name__ == "__main__":
 	parser.add_argument('--daemon', action='store_true', help='Run in daemon mode')
 	args = parser.parse_args()
 
-	Prepare_Trigger_OnOff()
-	Prepare_Trigger_Bathroom()
-	Prepare_Trigger_OnOff_LongOff()
-	Start_Functions()	# Execute prepared functions
+	import dbus_client_logic as DCL
+	for line in open(os.path.dirname(__file__)+"/dbus_clients_launcher_cfg.py"):
+		if ((line.startswith("#") == False) and (len(line) > 5)):
+			eval(line)
+	map(Start_Function, functions)  # Execute all functions in functions list
 
 	dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
 	bus = dbus.SystemBus()
