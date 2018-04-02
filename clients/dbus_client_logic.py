@@ -8,8 +8,7 @@ import logging
 class Simple_OnOff(DBusGPIO_Client):
 	""" Till input On output On and vice versa"""
 	def init(self, inputs, outputs):
-		self.inputs = list(itertools.chain(*[ inputs ]))
-		self.outputs = list(itertools.chain(*[ outputs ]))
+		super().init( inputs, outputs )
 		self.single_output = self.outputs[0]
 		self.single_output_state = lambda : self.outputs_state[ self.single_output ]
 		logging.info("Switch:%s, Relays:%d, OutputState: %s" % (self.inputs, self.single_output, self.single_output_state()) )
@@ -24,25 +23,19 @@ class Simple_OnOff(DBusGPIO_Client):
 class Trigger_OnOff(DBusGPIO_Client):
 	""" Short press invert output state """
 	def init(self, inputs, outputs):
-		self.inputs = list(itertools.chain(*[ inputs ]))
-		self.outputs = list(itertools.chain(*[ outputs ]))
+		super().init( inputs, outputs )
 		self.single_output = self.outputs[0]
-		self.single_output_state = lambda : self.outputs_state[ self.single_output ]
-		logging.info("Switch:%s, Relays:%d, OutputState: %s" % (self.inputs, self.single_output, self.single_output_state()) )
+		logging.info("Switch:%s, Relays:%d, OutputState: %s" % (self.inputs, self.single_output, self.outputs_state[self.single_output]) )
 
 	def _ShortPress(self, num):
-		if (self.single_output_state() == False):
-			self._On(self.single_output)
-		else:
-			self._Off(self.single_output)
+		self.invert_output(self.single_output)
 
 class Trigger_Bathroom(DBusGPIO_Client):
 	""" Short press invert output state """
 	def init(self, inputs, outputs):
-		self.inputs = list(itertools.chain(*[ inputs ]))
-		self.outputs = list(itertools.chain(*[ outputs ]))
-		self.get_output_state1 = lambda :self._GetOutputState(self.outputs[0])
-		self.get_output_state2 = lambda :self._GetOutputState(self.outputs[1])
+		super().init( inputs, outputs )
+		self.get_output_state1 = lambda : self.outputs_state(self.outputs[0])
+		self.get_output_state2 = lambda : self.outputs_state(self.outputs[1])
 		self.current_output_state1 = self.get_output_state1()
 		self.current_output_state2 = self.get_output_state2()
 		logging.info("Switch:%s, Relays:%s, OutputState: %s,%s" % (self.inputs, self.outputs, self.current_output_state1, self.current_output_state2))
@@ -62,18 +55,9 @@ class Trigger_Bathroom(DBusGPIO_Client):
 
 class Trigger_OnOff_LongOff(DBusGPIO_Client):
 	def init(self, inputs, outputs):
-		self.inputs  = list(itertools.chain(*[ inputs  ]))
-		self.outputs = list(itertools.chain(*[ outputs ]))
-		self.get_output_state = lambda :self._GetOutputState(self.outputs[0])
+		super().init( inputs, outputs )
+		self.get_output_state = lambda : self.outputs_state( self.outputs[0] )
 		logging.info("Switch:%s, Relay:%s, OutputState: %s" % (self.inputs, self.outputs, self.get_output_state()))
-
-	def get_outputs_state(self):
-		res = []
-		for num, state in self._GetOutputsState():
-			if num in self.outputs:
-				res.append([num, state])
-		return res
-
 
 	def _ShortPress(self, num):
 		if (self.get_output_state() == 0):
@@ -84,3 +68,14 @@ class Trigger_OnOff_LongOff(DBusGPIO_Client):
 	def _LongPress(self, num):
 		for output in self.outputs:
 			self._Off(output)
+
+
+class LongPress_Off(DBusGPIO_Client):
+	def init(self, inputs, outputs):
+		super().init( inputs, outputs )
+		self.get_outputs_state = lambda : { i:self.outputs_state[i] for i in self.outputs }
+		logging.info("Switch:%s, Relay:%s, OutputState: %s" % (self.inputs, self.outputs, self.get_outputs_state()))
+
+	def _LongPress(self, num):
+		for output, state in self.get_outputs_state().items():
+			if (state == 1): self._Off(output)

@@ -33,8 +33,13 @@ class DBusGPIO_Client(object):
 			self.outputs_state[num] = state
 		self.init(*args, **kwargs)
 
-	def init(self):
-		pass
+	def init(self, inputs, outputs):
+		self.set_inputs( inputs )
+		self.set_outputs( outputs )
+
+	def set_inputs(self, inputs): self.inputs = self.flatten(inputs)
+	def set_outputs(self, outputs): self.outputs = self.flatten(outputs)
+
 
 	def init_dbus(self):
 		dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
@@ -91,33 +96,47 @@ class DBusGPIO_Client(object):
 
 
 	def InputChanged(self, num, state):
+		""" To use Input changed detection, define _InputChanged(self, num, state) function """
 		if num in self.inputs:
-			logging.info("Input %d state changed to: %d" % (num, state) )
-			self._InputChanged(num, state)
+			if hasattr(self.__class__, '_InputChanged') and callable(getattr(self.__class__, '_InputChanged')):
+				logging.info("%s: Input %d state changed to: %d" % (self.__class__.__name__, num, state) )
+				self._InputChanged(num, state)
 
 	def ShortPress(self, num):
+		""" To use Short press detection, define _ShortPress(self, num) function """
 		if num in self.inputs:
-			logging.info("Short press detected: %d" % num)
-			self._ShortPress(num)
+			if hasattr(self.__class__, '_ShortPress') and callable(getattr(self.__class__, '_ShortPress')):
+				logging.info("%s: Short press detected: %d" % (self.__class__.__name__, num) )
+				self._ShortPress(num)
 
 	def LongPress(self, num):
+		""" To use Long press detection, define _LongPress(self, num) function """
 		if num in self.inputs:
-			logging.info("Long press detected: %d" % num)
-			self._LongPress(num)
+			if hasattr(self.__class__, '_LongPress') and callable(getattr(self.__class__, '_LongPress')):
+				logging.info("%s: Long press detected: %d" % (self.__class__.__name__, num) )
+				self._LongPress(num)
 
 	def OutputChanged(self, num, state):
 		if num in self.outputs:
-			logging.info("Output %d switch to: %s" % (num, state))
+			logging.info("%s: Output %d switch to: %s" % (self.__class__.__name__, num, state))
 			self.outputs_state[num] = state
 
-	def _InputChanged(self, num, state):
-		pass
+	def invert_output(self, num):
+		if (self.outputs_state[num] == 1): self._Off(num)
+		else: self._On(num)
 
-	def _ShortPress(self, num):
-		pass
 
-	def _LongPress(self, num):
-		pass
+	def flatten(self, l):
+		""" Helper function.
+		Transform any single value and list to 1D list.
+			Ex: 1 -> [1]
+				[[1,2]] -> [1,2]
+				[1,[2,[[3]]] -> [1, 2, 3]
+		"""
+		try:
+			return self.flatten(l[0]) + (self.flatten(l[1:]) if len(l) > 1 else []) if type(l) is list else [l]
+		except IndexError:
+			return []
 
 
 	def run(self):
