@@ -23,8 +23,9 @@ class DBusGPIO_Client(object):
 	dbus_interface   = 'su.bagna.gpio'
 	dbus_object_path = "/su/bagna/gpio"
 
-	def __init__(self, *args, auto_restart=False, **kwargs):
+	def __init__(self, *args, auto_restart=False, trigger_name='', **kwargs):
 		self.auto_restart = auto_restart
+		self.trigger_name = trigger_name
 		self.inputs = []
 		self.outputs = []
 		self.outputs_state = {}
@@ -99,26 +100,26 @@ class DBusGPIO_Client(object):
 		""" To use Input changed detection, define _InputChanged(self, num, state) function """
 		if num in self.inputs:
 			if hasattr(self.__class__, '_InputChanged') and callable(getattr(self.__class__, '_InputChanged')):
-				logging.info("%s: Input %d state changed to: %d" % (self.__class__.__name__, num, state) )
+				logging.info("%-40s %-25s Input %d state changed to: %d" % (self.trigger_name, self.__class__.__name__, num, state) )
 				self._InputChanged(num, state)
 
 	def ShortPress(self, num):
 		""" To use Short press detection, define _ShortPress(self, num) function """
 		if num in self.inputs:
 			if hasattr(self.__class__, '_ShortPress') and callable(getattr(self.__class__, '_ShortPress')):
-				logging.info("%s: Short press detected: %d" % (self.__class__.__name__, num) )
+				logging.info("%-40s %-25s Short press detected: %d" % (self.trigger_name, self.__class__.__name__, num) )
 				self._ShortPress(num)
 
 	def LongPress(self, num):
 		""" To use Long press detection, define _LongPress(self, num) function """
 		if num in self.inputs:
 			if hasattr(self.__class__, '_LongPress') and callable(getattr(self.__class__, '_LongPress')):
-				logging.info("%s: Long press detected: %d" % (self.__class__.__name__, num) )
+				logging.info("%-40s %-25s Long  press detected: %d" % (self.trigger_name, self.__class__.__name__, num) )
 				self._LongPress(num)
 
 	def OutputChanged(self, num, state):
 		if num in self.outputs:
-			logging.info("%s: Output %d switch to: %s" % (self.__class__.__name__, num, state))
+			logging.debug("%-40s %-25s Output %d switch to: %s" % (self.trigger_name, self.__class__.__name__, num, state))
 			self.outputs_state[num] = state
 
 	def invert_output(self, num):

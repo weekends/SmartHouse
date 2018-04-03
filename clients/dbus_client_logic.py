@@ -11,7 +11,7 @@ class Simple_OnOff(DBusGPIO_Client):
 		super().init( inputs, outputs )
 		self.single_output = self.outputs[0]
 		self.single_output_state = lambda : self.outputs_state[ self.single_output ]
-		logging.info("Switch:%s, Relays:%d, OutputState: %s" % (self.inputs, self.single_output, self.single_output_state()) )
+		logging.info("%-40s %-25s Switch:%s, Relays:%d, OutputState: %s" % (self.trigger_name, self.inputs, self.single_output, self.single_output_state()) )
 
 	def _InputChanged(self, num, state):
 		if (state):
@@ -26,20 +26,20 @@ class Trigger_OnOff(DBusGPIO_Client):
 	def init(self, inputs, outputs):
 		super().init( inputs, outputs )
 		self.single_output = self.outputs[0]
-		logging.info("Switch:%s, Relays:%d, OutputState: %s" % (self.inputs, self.single_output, self.outputs_state[self.single_output]) )
+		logging.info("%-40s %-25s Switch:%s, Relays:%d, OutputState: %s" % (self.trigger_name, self.__class__.__name__, self.inputs, self.single_output, self.outputs_state[self.single_output]) )
 
 	def _ShortPress(self, num):
 		self.invert_output(self.single_output)
 
 
 
-class Trigger_On_first_Off_all(DBusGPIO_Client):
+class Trigger_OneOn_AllOff(DBusGPIO_Client):
 	""" Short press invert output state """
 	def init(self, inputs, outputs):
 		super().init( inputs, outputs )
 		self.single_output = self.outputs[0]
 		self.get_outputs_state = lambda : { i:self.outputs_state[i] for i in self.outputs }
-		logging.info("Switch:%s, Relays:%s, OutputState: %s" % (self.inputs, self.outputs, self.get_outputs_state()) )
+		logging.info("%-40s %-25s Switch:%s, Relays:%s, OutputState: %s" % (self.trigger_name, self.__class__.__name__, self.inputs, self.outputs, self.get_outputs_state()) )
 
 	def _ShortPress(self, num):
 		if (1 in self.get_outputs_state().values()):
@@ -54,7 +54,7 @@ class LongPress_Off(DBusGPIO_Client):
 	def init(self, inputs, outputs):
 		super().init( inputs, outputs )
 		self.get_outputs_state = lambda : { i:self.outputs_state[i] for i in self.outputs }
-		logging.info("Switch:%s, Relay:%s, OutputState: %s" % (self.inputs, self.outputs, self.get_outputs_state()))
+		logging.info("%-40s %-25s Switch:%s, Relay:%s, OutputState: %s" % (self.trigger_name, self.__class__.__name__, self.inputs, self.outputs, self.get_outputs_state()))
 
 	def _LongPress(self, num):
 		for output, state in self.get_outputs_state().items():
@@ -66,7 +66,7 @@ class LongPress_On(DBusGPIO_Client):
 	def init(self, inputs, outputs):
 		super().init( inputs, outputs )
 		self.get_outputs_state = lambda : { i:self.outputs_state[i] for i in self.outputs }
-		logging.info("Switch:%s, Relay:%s, OutputState: %s" % (self.inputs, self.outputs, self.get_outputs_state()))
+		logging.info("%-40s %-25s Switch:%s, Relay:%s, OutputState: %s" % (self.trigger_name, self.__class__.__name__, self.inputs, self.outputs, self.get_outputs_state()))
 
 	def _LongPress(self, num):
 		for output, state in self.get_outputs_state().items():

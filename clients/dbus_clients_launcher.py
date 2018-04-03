@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#coding:utf-8
 
 import dbus_common as DB
 
@@ -15,7 +16,7 @@ import argparse
 import daemon
 
 import logging
-logging.basicConfig(level = logging.INFO)
+logging.basicConfig(level = logging.INFO, datefmt='%Y/%m/%d %H:%M:%S', format='%(asctime)s %(message)s')
 
 
 threads = {}
@@ -63,16 +64,25 @@ class ThreadsChecker:
 		return True
 
 
-if __name__ == "__main__":
-	parser = argparse.ArgumentParser(description='SmartHouse clients executor')
-	parser.add_argument('--daemon', action='store_true', help='Run in daemon mode')
-	args = parser.parse_args()
-
+def execute_Triggers(config):
 	import dbus_client_logic as DCL
-	for line in open(os.path.dirname(__file__)+"/dbus_clients_launcher_cfg.py"):
-		if ((line.startswith("#") == False) and (len(line) > 5)):
-			eval(line)
+	import configparser as ConfigParser
+	cfg = ConfigParser.ConfigParser(inline_comment_prefixes=('#','//'))
+	cfg.read(config)
+
+	#get_list = lambda val: list( eval(val) if (type(eval(val)) is list) or (type(eval(val)) is tuple) else [eval(val)] )
+	get_list = lambda val: list( eval(val) if isinstance(eval(val), (list, tuple)) else [eval(val)] )
+	for section in cfg.sections():
+		trigger = cfg.get(section, 'Trigger')
+		inputs  = get_list( cfg.get(section, 'Inputs') )
+		outputs = get_list( cfg.get(section, 'Outputs') )
+		function_str = 'DCL.'+ trigger+'('+ str(inputs) +','+ str(outputs) +', trigger_name="'+ section +'").run'
+		functions.append( eval( function_str ) )
 	map(Start_Function, functions)  # Execute all functions in functions list
+
+
+def execute(config):
+	execute_Triggers(config)
 
 	dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
 	bus = dbus.SystemBus()
@@ -84,8 +94,16 @@ if __name__ == "__main__":
 	loop.run()
 
 
-#	if args.daemon:
-#		with daemon.DaemonContext():
-#			execute()
-#	else:
-#		execute()
+
+if __name__ == "__main__":
+	config_file='/etc/SmartHouse_clients.ini'
+	parser = argparse.ArgumentParser(description='SmartHouse clients executor')
+	parser.add_argument('--daemon', '-d', action='store_true', help='Run in daemon mode')
+	parser.add_argument('--config', '-c', dest='config', type=str, default=config_file, help='Config file, default config '+config_file)
+	args = parser.parse_args()
+
+	if args.daemon:
+		with daemon.DaemonContext():
+			execute(args.config)
+	else:
+		execute(args.config)
