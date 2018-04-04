@@ -14,3 +14,4 @@ a2ensite SmartHouse.conf
 grep -q 'Listen 4433' /etc/apache2/ports.conf || echo 'Listen 4433' >> /etc/apache2/ports.conf
 
 systemctl reload apache2
+systemctl enable apache2

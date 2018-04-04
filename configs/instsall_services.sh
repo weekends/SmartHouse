@@ -10,3 +10,6 @@ for f in $(ls -1 "$SCRIPT_DIR/etc/systemd/system/"); do
 	systemctl enable $f
 	systemctl restart $f
 done
+
+systemctl stop smarthouse_web.service
+systemctl disable smarthouse_web.service
