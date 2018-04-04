@@ -1,10 +1,21 @@
 #!/usr/bin/env python3
-#coding=utf-8
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+# coding=utf-8
 
 from datetime import datetime
 import dbus
 import json
+
+import locale
+locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
+def set_output_encoding(codec, errors='strict'):
+    import io, sys
+    sys.stdout = io.TextIOWrapper(
+        sys.stdout.detach(), errors=errors,
+            line_buffering=sys.stdout.line_buffering)
+set_output_encoding('utf8')
+
+
 
 bus = dbus.SystemBus()
 service_term = bus.get_object('su.bagna.termo', '/su/bagna/termo')
@@ -33,7 +44,7 @@ for sensor_id, value in temperatures():
     temperatures_sorted.append([order, name, sensor_id, value])
 
 for order, name, sensor_id, value in sorted(temperatures_sorted):
-    temperatures_str += "<tr><td>%s</td><td  align='center'>%s</td><td align='right'><span id='%s'>%3.4f °C</span></td></tr>\n" % \
+    temperatures_str += u"<tr><td>%s</td><td  align='center'>%s</td><td align='right'><span id='%s'>%3.4f °C</span></td></tr>\n" % \
                         (sensor_id, name, sensor_id, value)
 temperatures_str += '</table></div>'
 
@@ -150,7 +161,7 @@ Content-Type: text/html
 
 
 <script src="/js/jquery-3.1.1.min.js"></script>
-<script src="/js/test.js"></script>
+<script src="/js/interactive.js"></script>
 
 </head>
 <body>

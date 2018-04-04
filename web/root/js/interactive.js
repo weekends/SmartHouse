@@ -18,13 +18,13 @@ function ChangeOutDisplayStateOn(id)
 {
 	document.getElementById('out_'+id).innerHTML='<button onclick="change_state('+id+', 0)"><font color="red">Off</font></button>';
 //	document.getElementById('out_'+id).innerHTML='<b id=out_' + id + '><font color="red">On</font></a></b>';
-//	document.getElementById('out_'+id).innerHTML='<b id=out_' + id + '><a target="_blank" href="/cgi-bin/outchangestate.cgi?port='+ id +'&state=0"><font color="red">On</font></a></b>';
+//	document.getElementById('out_'+id).innerHTML='<b id=out_' + id + '><a target="_blank" href="/cgi-bin/outchangestate.fcgi?port='+ id +'&state=0"><font color="red">On</font></a></b>';
 }
 function ChangeOutDisplayStateOff(id)
 {
 	document.getElementById('out_'+id).innerHTML='<button onclick="change_state('+id+', 1)"><font color="white">On.</font></button>';
 //	document.getElementById('out_'+id).innerHTML='<b id=out_' + id + '><font color="white">Off</font></b>';
-//	document.getElementById('out_'+id).innerHTML='<b id=out_' + id + '><a target="_blank" href="/cgi-bin/outchangestate.cgi?port='+ id +'&state=1"><font color="white">Off</font></a></b>';
+//	document.getElementById('out_'+id).innerHTML='<b id=out_' + id + '><a target="_blank" href="/cgi-bin/outchangestate.fcgi?port='+ id +'&state=1"><font color="white">Off</font></a></b>';
 }
 
 function UpdateDateTime()
@@ -35,7 +35,7 @@ function UpdateDateTime()
 
 function GetInputStates()
 {
-    $.get("/cgi-bin/inputstates.cgi", function(data, status){
+    $.get("/cgi-bin/inputstates.fcgi", function(data, status){
         var arr = JSON.parse('[' + data + ']')
         for (var i in arr) {
             if (arr[i][1] == 1) {
@@ -49,7 +49,7 @@ function GetInputStates()
 
 function GetOutputsState()
 {
-    $.get("/cgi-bin/outputstates.cgi", function(data, status) {
+    $.get("/cgi-bin/outputstates.fcgi", function(data, status) {
         var arr = JSON.parse('[' + data + ']')
         for (var i in arr) {
             if (arr[i][1] == 1) {
@@ -63,7 +63,7 @@ function GetOutputsState()
 
 function change_state(pin, state)
 {
-	str="/cgi-bin/outchangestate_clear.cgi?port="+ pin +"&state="+state
+	str="/cgi-bin/outchangestate_clear.fcgi?port="+ pin +"&state="+state
 	$.get(str, function(data, status) {
 		if (status == 'success') {
 			if (state == 1) {
@@ -79,7 +79,7 @@ function change_state(pin, state)
 
 function GetTemperaturies()
 {
-    $.get("/cgi-bin/temperatures.cgi", function(data, status) {
+    $.get("/cgi-bin/temperatures.fcgi", function(data, status) {
 		if (status == 'success') {
         	var arr = JSON.parse('[' + data + ']')
         	for (var i in arr) {

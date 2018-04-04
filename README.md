@@ -11,7 +11,47 @@ Required packages:
     python3-configobj   -> for gpio_detector.py
     python3-daemon
     python3-psutil
-    python3-pip         -> for installing of the Adafruit_GPIO libraries
+    python3-pip
 
     pip3 install Adafruit_GPIO
     pip3 install Adafruit_BBIO
+	pip3 install flup
+
+For FastCGI web with apache2, install:
+	apt-get install libapache2-mod-fcgid
+
+Configure apache2:
+	a2enmod fcgid
+
+	/etc/apache2/ports.conf
+	Change Listen 8080 to needed port, default must be 80
+		Listen 8080 -> Listen 80
+
+
+	/etc/apache2/sites-enabled/000-default.conf
+	Add after <VirtualHost *:80>
+
+		DocumentRoot /opt/SmartHouse/web/root
+		<Directory />
+			Options FollowSymLinks
+			AllowOverride all
+			Allow from all
+			Require all granted
+		</Directory>
+
+		<Directory "/opt/SmartHouse/web/root/cgi-bin">
+			AllowOverride None
+			Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+			Require all granted
+		</Directory>
+
+		ScriptAlias /cgi-bin/ /opt/SmartHouse/web/root/cgi-bin/
+		<Directory /opt/SmartHouse/web/root>
+			Options +ExecCGI
+			DirectoryIndex index.html
+		</Directory>
+		AddHandler cgi-script .cgi
+
+	comment line: DocumentRoot /var/www/html
+	DocumentRoot /var/www/html	-> #   DocumentRoot /var/www/html
+
