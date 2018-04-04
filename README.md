@@ -22,36 +22,8 @@ For FastCGI web with apache2, install:
 
 Configure apache2:
 	a2enmod fcgid
+	a2ensite SmartHouse.conf
 
-	/etc/apache2/ports.conf
-	Change Listen 8080 to needed port, default must be 80
-		Listen 8080 -> Listen 80
-
-
-	/etc/apache2/sites-enabled/000-default.conf
-	Add after <VirtualHost *:80>
-
-		DocumentRoot /opt/SmartHouse/web/root
-		<Directory />
-			Options FollowSymLinks
-			AllowOverride all
-			Allow from all
-			Require all granted
-		</Directory>
-
-		<Directory "/opt/SmartHouse/web/root/cgi-bin">
-			AllowOverride None
-			Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
-			Require all granted
-		</Directory>
-
-		ScriptAlias /cgi-bin/ /opt/SmartHouse/web/root/cgi-bin/
-		<Directory /opt/SmartHouse/web/root>
-			Options +ExecCGI
-			DirectoryIndex index.html
-		</Directory>
-		AddHandler cgi-script .cgi
-
-	comment line: DocumentRoot /var/www/html
-	DocumentRoot /var/www/html	-> #   DocumentRoot /var/www/html
+	execute configure_apache2.sh
+	to access web page, use http://url:4433
 
