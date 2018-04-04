@@ -8,6 +8,7 @@ for f in $(ls -1 "$SCRIPT_DIR/etc/apache2/sites-available/"); do
 	chown root.root "$DEST_SYSTEMD_PATH/$f"
 done
 
+a2enmod cgi
 a2enmod fcgid
 a2ensite SmartHouse.conf
 

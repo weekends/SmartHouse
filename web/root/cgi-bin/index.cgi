@@ -15,6 +15,7 @@ def set_output_encoding(codec, errors='strict'):
             line_buffering=sys.stdout.line_buffering)
 set_output_encoding('utf8')
 
+print("Content-Type: text/html\n\n")
 
 
 bus = dbus.SystemBus()
@@ -91,9 +92,7 @@ for number, state in outstate:
 gpios_output_str += '</table></div>'
 
 
-print("""\
-Content-Type: text/html
-
+body_str = """\
 <html>
 <head>
 <meta charset="utf-8" />
@@ -167,12 +166,13 @@ Content-Type: text/html
 <body>
 
 <center>
-""")
+"""
 
-print('<div class="blockk"><b>Текущая дата/время</b><hr><p id="date">' + datetime.now().strftime("%Y/%m/%d %H:%M:%S") + '</p></div>' + \
-    temperatures_str + gpios_output_str + gpios_input_state_str)
+datetime_str = '<div class="blockk"><b>Текущая дата/время</b><hr><p id="date">' + datetime.now().strftime("%Y/%m/%d %H:%M:%S") + '</p></div>' + \
+    temperatures_str + gpios_output_str + gpios_input_state_str
 
-print("""\
+
+end_str = """\
 </center>
 
 <script type="text/javascript">
@@ -185,4 +185,6 @@ InitTimer();
 
 </body>
 </html>
-""")
+"""
+
+print( body_str, datetime_str, end_str)

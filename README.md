@@ -21,6 +21,9 @@ For FastCGI web with apache2, install:
 	apt-get install libapache2-mod-fcgid
 
 Configure apache2:
+	dpkg-reconfigure locales
+	select locale ru_RU.UTF-8
+
 	a2enmod fcgid
 	a2ensite SmartHouse.conf
 
