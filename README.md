@@ -23,6 +23,8 @@ For FastCGI web with apache2, install:
 Configure apache2:
 	dpkg-reconfigure locales
 	select locale ru_RU.UTF-8
+	htpasswd -c /opt/SmartHouse/passwords USER
+	set name to .htaccess in /opt/SmartHouse/web/root folder
 
 	a2enmod fcgid
 	a2ensite SmartHouse.conf
