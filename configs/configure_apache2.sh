@@ -13,5 +13,5 @@ a2ensite SmartHouse.conf
 
 grep -q -e '^Listen 80$' /etc/apache2/ports.conf || echo 'Listen 80' >> /etc/apache2/ports.conf
 
-systemctl reload apache2
+systemctl restart apache2
 systemctl enable apache2

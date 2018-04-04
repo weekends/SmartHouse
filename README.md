@@ -25,5 +25,5 @@ Configure apache2:
 	a2ensite SmartHouse.conf
 
 	execute configure_apache2.sh
-	to access web page, use http://url:4433
+	to access web page, use http://url:80
 
