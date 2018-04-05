@@ -40,9 +40,10 @@ temperatures_str = '<div class="blockk"><b>Термометры</b><hr>\n'
 temperatures_str += '<table width="100%" style=" border-radius: 5px; border-style: solid;">\n'
 
 temperatures_sorted = []
-for sensor_id, value in temperatures():
-    order, name = address_to_name.get(sensor_id, [100, ''])
-    temperatures_sorted.append([order, name, sensor_id, value])
+for sensor_id, value, name in temperatures():
+    #order, name = address_to_name.get(sensor_id, [100, ''])
+    #temperatures_sorted.append([order, name, sensor_id, value])
+	temperatures_sorted.append([0, name, sensor_id, value])
 
 for order, name, sensor_id, value in sorted(temperatures_sorted):
     temperatures_str += u"<tr><td>%s</td><td  align='center'>%s</td><td align='right'><span id='%s'>%3.4f °C</span></td></tr>\n" % \
@@ -75,7 +76,7 @@ for number, state in instate:
 gpios_input_state_str += '</table></div>'
 
 
-gpios_output_str = '<div class="blockk"><b>Управление выходами</b><hr>\n'
+gpios_output_str = '<div class="blockk"><b>Управление выходами</b><a href="/cgi-bin/configured_outputs.fcgi"> Освещение</a><hr>\n'
 gpios_output_str += '<table width="100%" style=" border-radius: 5px; border-style: solid;"><tr align="center"> <td>&nbsp</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td> </tr>'
 for number, state in outstate:
 	if i == 0:

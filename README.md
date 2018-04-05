@@ -17,6 +17,10 @@ Required packages:
     pip3 install Adafruit_BBIO
 	pip3 install flup
 
+	1-wire requires:
+	pip3 install pyownet
+
+
 For FastCGI web with apache2, install:
 	apt-get install libapache2-mod-fcgid
 
@@ -31,4 +35,6 @@ Configure apache2:
 
 	execute configure_apache2.sh
 	to access web page, use http://url:80
+
+
 

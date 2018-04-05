@@ -9,14 +9,14 @@ import json
 bus = dbus.SystemBus()
 service_term = bus.get_object('su.bagna.termo', "/su/bagna/termo")
 temperatures   = service_term.get_dbus_method('GetTemperatures', 'su.bagna.termo')
-
+GetTimeout = service_term.get_dbus_method('GetTimeout', 'su.bagna.termo')
 
 def application(environ, start_response):
 	start_response('200 OK', [('Content-Type', 'text/html; charset=utf-8')])
 
 	temperatures_str = ''
-	for sensor_id, value in temperatures():
-		temperatures_str += "[\"%s\",\"%3.4f °C\"]," % (sensor_id, value)
+	for sensor_id, value, name in temperatures():
+		temperatures_str += "[\"%s\",\"%3.4f °C\",\"%s\"]," % (sensor_id, value, name)
 
 	temperatures_str = temperatures_str[0:-1]
 
