@@ -22,6 +22,8 @@ Logger = logging.getLogger('sysfs.termo')
 Logger.addHandler(logging.StreamHandler())
 Logger.setLevel(logging.WARNING)
 
+CFG_FILE='/etc/SmartHouse_termo.ini'
+
 
 class OWTermo(object):
 	OWTermTypeCodes = ['28']
@@ -124,10 +126,6 @@ class Service(dbus.service.Object):
 				return temp
 		return 0xFFFF
 
-	@dbus.service.signal('su.bagna.termo')
-	def Temperatures(self, temperatures):
-		return str(self.temperatures)
-
 	@dbus.service.method("su.bagna.termo", in_signature='', out_signature='')
 	def InquiryTemperatures(self):
 		self.Temperatures(self.temperatures)
@@ -137,7 +135,27 @@ class Service(dbus.service.Object):
 		return self.ow.get_timeout()
 
 
-CFG_FILE='/etc/SmartHouse_termo.ini'
+#	@dbus.service.method("su.bagna.gpio", in_signature='', out_signature='v')   # Retrieve GPIO's configuration
+#	def GetConfigGPIO(self):
+#		import configparser as ConfigParser
+#		cfg = ConfigParser.ConfigParser(inline_comment_prefixes=('#','//'))
+#		cfg.read(CFG_FILE)
+#		result = {}
+#		for key in cfg:
+#			parm = {}
+#			for item, value in cfg.items(key):
+#				parm[item] = value
+#			result[key] = parm
+#
+#		return dbus.Dictionary(result)
+
+
+	@dbus.service.signal('su.bagna.termo')
+	def Temperatures(self, temperatures):
+		return str(self.temperatures)
+
+
+
 if __name__ == "__main__":
 	import configparser as ConfigParser
 	cfg = ConfigParser.ConfigParser(inline_comment_prefixes=('#','//'))
