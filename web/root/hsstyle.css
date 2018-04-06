@@ -2,3 +2,41 @@ body{background-color: #7D8EE2;color:#FFF;}
 a {color:#73B9FF;}
 .blockk {border:solid 1px #2d2d2d;background:#0059B3;padding:10px 10px 10px 10px;-moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
 .blockk{border:double 2px #000000;-moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
+
+button{width: 100%;padding: 0;margin: 0;background-image: none;background-color: transparent;cursor: pointer;}
+button:hover {//background: yellow;}
+
+TABLE {
+	/* border: 2px solid black; */ /* Рамка вокруг таблицы */
+	/* border-spacing: collapse; */ /* Убираем двойные линии между ячейками */
+	border-spacing:  0px 0px;; /* Убираем двойные линии между ячейками */
+
+	border: solid 1px #2d2d2d;
+	background:#0059B3;
+	/* padding:10px 10px 10px 10px; */
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+
+	font-size: 16px;
+}
+TD, TH {
+	/* text-align: left; */ /* Выравнивание по центру */
+	padding: 3px; /* Поля вокруг содержимого ячеек */
+	border: solid 1px #2d2d2d; /* Параметры рамки */
+
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+TH {
+	/* background: #4682b4; */ /* Цвет фона */
+	color: white; /* Цвет текста */
+	border-bottom: 2px solid black; /* Линия снизу */
+}
+TD.col1 {color: black;}
+TD.col2 {color: blue;font-weight: bold;}
+.lc {
+	font-weight: bold; /* Жирное начертание текста */
+	text-align: left; /* Выравнивание по левому краю */
+}

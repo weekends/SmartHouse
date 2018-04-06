@@ -23,6 +23,8 @@ import PCA9555 as GPIO
 import cape_detector as capes_detector
 from cape_detector import GPIOmapper
 
+CFG_FILE='/etc/SmartHouse_gpios.ini'
+
 class Service(dbus.service.Object):
 	dbus_bus_name    = 'su.bagna.gpio'
 	dbus_interface   = 'su.bagna.gpio'
@@ -187,6 +189,27 @@ class Service(dbus.service.Object):
 				result.append( (dbus.Int16(GPIO_board.NUM_GPIO*slot + i), dbus.Boolean( (in_state>>i) & 0x01 )) )
 		if (result == []): result = [-1]
 		return dbus.Array( sorted(result) )
+
+
+	@dbus.service.method("su.bagna.gpio", in_signature='', out_signature='v')   # Retrieve GPIO's configuration
+	def GetConfigGPIO(self):
+		import configparser as ConfigParser
+		cfg = ConfigParser.ConfigParser(inline_comment_prefixes=('#','//'))
+		cfg.read(CFG_FILE)
+		result = {}
+		for key in cfg:
+			parm = {}
+			for item, value in cfg.items(key):
+				parm[item] = value
+			result[key] = parm
+
+		return dbus.Dictionary(result)
+		#for addr in ow.read_addresses():
+		#	if not cfg.has_option('Termometers', addr):
+		#		cfg.set('Termometers', addr, '')
+		#		is_new_names = True
+		#with open(CFG_FILE+'.generated.ini', 'w') as configfile:
+		#	cfg.write(configfile)
 
 
 

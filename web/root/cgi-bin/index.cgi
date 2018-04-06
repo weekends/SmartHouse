@@ -24,6 +24,7 @@ service_gpio = bus.get_object('su.bagna.gpio', '/su/bagna/gpio')
 temperatures   = service_term.get_dbus_method('GetTemperatures', 'su.bagna.termo')
 GetInputsState = service_gpio.get_dbus_method('GetInputsState',  'su.bagna.gpio')
 GetOutputsState = service_gpio.get_dbus_method('GetOutputsState',  'su.bagna.gpio')
+GetConfigGPIO =  service_gpio.get_dbus_method('GetConfigGPIO',  'su.bagna.gpio')
 
 address_to_name = {
     '28A78CD7020000E5': [1, 'На улице'],
@@ -50,7 +51,8 @@ for order, name, sensor_id, value in sorted(temperatures_sorted):
                         (sensor_id, name, sensor_id, value)
 temperatures_str += '</table></div>'
 
-
+cfg = GetConfigGPIO()
+cfg_inputs = cfg['Inputs']
 instate = []
 for res in GetInputsState():
     instate.append( (int(res[0]), bool(res[1])) )
@@ -60,6 +62,7 @@ outstate = []
 for res in GetOutputsState():
     outstate.append( (int(res[0]), bool(res[1])) )
 sorted(outstate)
+cfg_outputs = cfg['Outputs']
 
 i = 0
 gpios_input_state_str = '<div class="blockk"><b>Состояние входов</b><hr>\n'
@@ -84,7 +87,10 @@ for number, state in outstate:
 	i += 1
 
 	# We only add ID here, compleate data pushed from JavaScript
-	gpios_output_str += '<td><b id=out_' + str(number) + '>&nbsp</b></td>'
+	if (str(number) in cfg_outputs):
+		gpios_output_str += '<td><b id=out_inuse_' + str(number) + '>&nbsp</b></td>'
+	else:
+		gpios_output_str += '<td><b id=out_' + str(number) + '>&nbsp</b></td>'
 
 #	gpios_output_str += '<td><b id=out_' + str(number) + '>&nbsp</b></td>'
 	if i == 8:
@@ -102,63 +108,6 @@ body_str = """\
 <link rel="stylesheet" type="text/css" href="/hsstyle.css">
 <style type="text/css" media='(min-width: 810px)'>body{font-size:18px;}.blockk {width: 400px;}</style>
 <style type="text/css" media="(max-width: 800px) and (orientation:landscape)">body{font-size:8px;}</style>
-
-<style type="text/css">
-    TABLE {
-        /* border: 2px solid black; */ /* Рамка вокруг таблицы */
-        /* border-spacing: collapse; */ /* Убираем двойные линии между ячейками */
-        border-spacing:  0px 0px;; /* Убираем двойные линии между ячейками */
-
-        border: solid 1px #2d2d2d;
-        background:#0059B3;
-        /* padding:10px 10px 10px 10px; */
-        -moz-border-radius: 5px;
-        -webkit-border-radius: 5px;
-        border-radius: 5px;
-
-        font-size: 16px;
-    }
-    TD, TH {
-        /* text-align: left; */ /* Выравнивание по центру */
-        padding: 3px; /* Поля вокруг содержимого ячеек */
-        border: solid 1px #2d2d2d; /* Параметры рамки */
-
-        -moz-border-radius: 5px;
-        -webkit-border-radius: 5px;
-        border-radius: 5px;
-    }
-    TH {
-        /* background: #4682b4; */ /* Цвет фона */
-        color: white; /* Цвет текста */
-        border-bottom: 2px solid black; /* Линия снизу */
-    }
-    TD.col1 {
-        color: black;
-    }
-    TD.col2 {
-        color: blue;
-        font-weight: bold;
-    }
-    .lc {
-        font-weight: bold; /* Жирное начертание текста */
-        text-align: left; /* Выравнивание по левому краю */
-    }
-
-  button {
-//    color: red;
-//    margin: 5px;
-    width: 100%;
-	padding: 0;
-    margin: 0;
-	background-image: none;
-	background-color: transparent;
-	cursor: pointer;
-  }
-  button:hover {
-//    background: yellow;
-  }
-</style>
-
 
 <script src="/js/jquery-3.1.1.min.js"></script>
 <script src="/js/interactive.js"></script>

@@ -31,7 +31,7 @@ def application(environ, start_response):
 
 	gpios_outputs_str = gpios_outputs_str[0:-1]
 
-	yield gpios_outputs_str.encode('utf-8')
+	yield gpios_outputs_str.encode()
 
 
 if __name__ == '__main__':

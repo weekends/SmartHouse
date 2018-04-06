@@ -1,6 +1,25 @@
-function Test()
+function UpdateDateTime()
 {
-    document.write("<p>" + Date() + "</p>");
+	var options = { weekday:'short', month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'numeric', second:'numeric' };
+    var date = new Date(); //.toLocaleString('en-US', options);
+    document.getElementById('date').innerHTML = date;
+}
+
+
+function GetTemperaturies()
+{
+    $.get("/cgi-bin/temperatures.fcgi", function(data, status) {
+		if (status == 'success') {
+        	var arr = JSON.parse('[' + data + ']')
+        	for (var i in arr) {
+            	document.getElementById(arr[i][0]).innerHTML=arr[i][1];
+        	}
+		} else {
+			alert("Ошибка получения температуры: "+status+data)
+		}
+    }) .fail(function(data) {
+    	//alert( "Скрипт получения температуры вернул ошибку либо не найден.");
+	});
 }
 
 
@@ -16,22 +35,22 @@ function ChangeDisplayStateOff(id)
 
 function ChangeOutDisplayStateOn(id)
 {
-	document.getElementById('out_'+id).innerHTML='<button onclick="change_state('+id+', 0)"><font color="red">Off</font></button>';
-//	document.getElementById('out_'+id).innerHTML='<b id=out_' + id + '><font color="red">On</font></a></b>';
-//	document.getElementById('out_'+id).innerHTML='<b id=out_' + id + '><a target="_blank" href="/cgi-bin/outchangestate.fcgi?port='+ id +'&state=0"><font color="red">On</font></a></b>';
-}
-function ChangeOutDisplayStateOff(id)
-{
-	document.getElementById('out_'+id).innerHTML='<button onclick="change_state('+id+', 1)"><font color="white">On.</font></button>';
-//	document.getElementById('out_'+id).innerHTML='<b id=out_' + id + '><font color="white">Off</font></b>';
-//	document.getElementById('out_'+id).innerHTML='<b id=out_' + id + '><a target="_blank" href="/cgi-bin/outchangestate.fcgi?port='+ id +'&state=1"><font color="white">Off</font></a></b>';
+	element = document.getElementById('out_'+id)
+	if (element != null) element.innerHTML='<button onclick="change_state('+id+', 0)"><font color="red">Off</font></button>';
+
+	element = document.getElementById('out_inuse_'+id)
+	if (element != null) element.innerHTML='<b id=out_inuse_' + id + '><font color="red">On</font></b>'
 }
 
-function UpdateDateTime()
+function ChangeOutDisplayStateOff(id)
 {
-    var date = new Date();
-    document.getElementById('date').innerHTML = date;
+	element = document.getElementById('out_'+id)
+	if (element != null) element.innerHTML='<button onclick="change_state('+id+', 1)"><font color="white">On.</font></button>';
+
+	element = document.getElementById('out_inuse_'+id)
+	if (element != null) element.innerHTML='<b id=out_inuse_' + id + '><font color="white">Off</font></b>'
 }
+
 
 function GetInputStates()
 {
@@ -77,26 +96,11 @@ function change_state(pin, state)
 	});
 }
 
-function GetTemperaturies()
-{
-    $.get("/cgi-bin/temperatures.fcgi", function(data, status) {
-		if (status == 'success') {
-        	var arr = JSON.parse('[' + data + ']')
-        	for (var i in arr) {
-            	document.getElementById(arr[i][0]).innerHTML=arr[i][1];
-        	}
-		} else {
-			alert("Ошибка получения температуры: "+status+data)
-		}
-    }) .fail(function(data) {
-    	//alert( "Скрипт получения температуры вернул ошибку либо не найден.");
-	});
-}
 
 function GettingGPIOStates()
 {
-    GetInputStates()
     GetOutputsState()
+    GetInputStates()
 }
 
 function InitTimer()
