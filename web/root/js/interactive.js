@@ -40,8 +40,8 @@ function update_output_buttons(id, state)
 	element = document.getElementById('out_'+id);
 
 	if (element != null) {
-		if (state == 0) ico='/ico/power_red.png';
-		else ico = '/ico/power_blue.png';
+		if (state == 0) ico='/ico/Power_On.png';
+		else ico = '/ico/Power_Off.png';
 		element.innerHTML = '<button onclick="change_state('+id+', '+state+')" type="button"><IMG height="'+ico_size+'" width="'+ico_size+'" border="0" src="'+ico+'"></button>';
 	} else {
 		element = document.getElementById('out_inuse_'+id);
