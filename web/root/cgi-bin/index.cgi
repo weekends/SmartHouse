@@ -14,7 +14,6 @@ set_output_encoding('utf8')
 
 print("Content-Type: text/html\n\n")
 
-
 import dbus
 bus = dbus.SystemBus()
 service_term = bus.get_object('su.bagna.termo', '/su/bagna/termo')
@@ -54,9 +53,11 @@ for i, [number, state] in enumerate(sorted(GetOutputsState()), start=0):
 gpios_output_str += '</table></div>'
 
 gpios_input_state_str = '<div class="blockk"><b>Состояние входов</b><hr>\n'
-gpios_input_state_str += '<table width="100%" style=" border-radius: 5px; border-style: solid;"><tr align="center"> <td>&nbsp</td>'+numered_table_string+'</tr>'
+#gpios_input_state_str += '<table width="100%" style=" border-radius: 5px; border-style: solid;"><tr align="center"> <td>&nbsp</td>'+numered_table_string+'</tr>'
+gpios_input_state_str += '<table width="100%" style=" border-radius: 5px; border-style: solid;">'
 for i, [number, state] in enumerate(sorted(GetInputsState()), start=0):
-	if (( i % 8) == 0): gpios_input_state_str += '<tr align="center"><td align="left">%03d..%03d</td>' % (number, number+7)
+#	if (( i % 8) == 0): gpios_input_state_str += '<tr align="center"><td align="left">%03d..%03d</td>' % (number, number+7)
+	if (( i % 8) == 0): gpios_input_state_str += '<tr align="center">'
 	gpios_input_state_str += '<td><b id=' + str(number) + '>&nbsp</b></td>';
 	if (( (i+1) % 8) == 0): gpios_input_state_str += '</tr>'
 gpios_input_state_str += '</table></div>'
