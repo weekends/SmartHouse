@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SmartHouse</string>
+    <string name="host_settings">Настройки хоста</string>
+    <string name="exit">Выход</string>
+    <string name="title_activity_settings">Настройки</string>
+    <string name="host_name">Имя или IP адрес хоста</string>
+    <string name="host_name_description">ИмяХоста:порт</string>
+    <string name="user_name">Имя пользователя</string>
+    <string name="user_password">Пароль</string>
+    <string name="loading">Загрузка...</string>
+</resources>
