@@ -30,7 +30,7 @@ def application(environ, start_response):
 """
 	yield ("<div class=\"blockk\"><b>Текущая дата/время</b><hr><p id=\"date\">%s</p></div>" % datetime.now().strftime("%Y/%m/%d %H:%M:%S")).encode()
 
-	yield '<div class="blockk"><b>Управление освещением</b>&emsp;<a href="/cgi-bin/index.cgi">Назад</a><hr>\n'.encode()
+	yield '<div class="blockk"><b>Управление освещением</b>&emsp;<a href="/cgi-bin/index_base_page.cgi">Базовый вид</a><hr>\n'.encode()
 	yield '<table width="100%" style=" border-radius: 5px; border-style: solid;"><tr align="center"><td>Управ.</td><td>№</td><td>Название</td></tr>'.encode()
 
 	outstate = []
