@@ -19,6 +19,17 @@ class Simple_OnOff(DBusGPIO_Client):
 		else:
 			self._Off(self.single_output)
 
+class Simple_OnOff_invert(DBusGPIO_Client):
+	""" Till input On output On and vice versa"""
+	def init(self, inputs, outputs):
+		super().init( inputs, outputs )
+		self.single_output = self.outputs[0]
+		self.single_output_state = lambda : self.outputs_state[ self.single_output ]
+#		logging.info("%-40s %-25s Switch:%s, Relays:%d, OutputState: %s" % (self.trigger_name, self.inputs, self.single_output, self.single_output_state()) )
+		logging.info("%-40s %-25s Switch:%s, Relays:%d, OutputState: %s" % (self.trigger_name, self.__class__.__name__, self.inputs, self.single_output, self.outputs_state[self.single_output]) )
+
+	def _InputChanged(self, num, state):
+		self.invert_output(self.single_output)
 
 
 class Trigger_OnOff(DBusGPIO_Client):
