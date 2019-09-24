@@ -4,7 +4,6 @@ from dbus_client import DBusGPIO_Client
 import itertools
 import logging
 
-
 class Simple_OnOff(DBusGPIO_Client):
 	""" Till input On output On and vice versa"""
 	def init(self, inputs, outputs):

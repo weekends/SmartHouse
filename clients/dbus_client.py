@@ -117,10 +117,15 @@ class DBusGPIO_Client(object):
 				logging.info("%-40s %-25s Long  press detected: %d" % (self.trigger_name, self.__class__.__name__, num) )
 				self._LongPress(num)
 
+	def _OutputChanged(self, num, state):
+		pass
+
 	def OutputChanged(self, num, state):
 		if num in self.outputs:
 			logging.debug("%-40s %-25s Output %d switch to: %s" % (self.trigger_name, self.__class__.__name__, num, state))
 			self.outputs_state[num] = state
+			self._OutputChanged(num, state)
+
 
 	def invert_output(self, num):
 		if (self.outputs_state[num] == 1): self._Off(num)

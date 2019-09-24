@@ -66,18 +66,34 @@ class ThreadsChecker:
 
 def execute_Triggers(config):
 	import dbus_client_logic as DCL
+	import dbus_network_monitor as NetMon
+
 	import configparser as ConfigParser
 	cfg = ConfigParser.ConfigParser(inline_comment_prefixes=('#','//'))
 	cfg.read(config)
 
-	#get_list = lambda val: list( eval(val) if (type(eval(val)) is list) or (type(eval(val)) is tuple) else [eval(val)] )
 	get_list = lambda val: list( eval(val) if isinstance(eval(val), (list, tuple)) else [eval(val)] )
 	for section in cfg.sections():
-		trigger = cfg.get(section, 'Trigger')
-		inputs  = get_list( cfg.get(section, 'Inputs') )
-		outputs = get_list( cfg.get(section, 'Outputs') )
-		function_str = 'DCL.'+ trigger+'('+ str(inputs) +','+ str(outputs) +', trigger_name="'+ section +'").run'
-		functions.append( eval( function_str ) )
+		function_str = ''
+		section_type = cfg.get(section, 'Type', fallback='Trigger')
+		if (section_type == 'Trigger'):
+			trigger = cfg.get(section, 'Trigger')
+			inputs  = get_list( cfg.get(section, 'Inputs') )
+			outputs = get_list( cfg.get(section, 'Outputs') )
+			function_str = 'DCL.'+ trigger+'('+ str(inputs) +','+ str(outputs) +', trigger_name="'+ section +'").run'
+		elif (section_type == 'RouterMonitor'):
+			output = cfg.get(section, 'Output')
+			ip_ping_address = cfg.get(section, 'PingAddress', fallback='8.8.8.8')
+			ping_timeout = cfg.get(section, 'PingTimeout', fallback=2)
+			function_str = 'NetMon.'+'RouterMonitor'+'('+ str(output) +\
+														', trigger_name="'+ section + '"' +\
+														', ip_ping_address="' + ip_ping_address + '"' +\
+														', ping_timeout=' + ping_timeout + ').run'
+		else:
+			loggin.info("Unknown section type: '%s'" % section_type)
+
+		if (function_str != ''): functions.append( eval( function_str ) )
+
 	map(Start_Function, functions)  # Execute all functions in functions list
 
 
