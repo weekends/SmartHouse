@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">SmartHouse</string>
+    <string name="host_settings">Host Settings</string>
+    <string name="exit">Exit</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+    <string name="host_name">Host Name or IP</string>
+    <string name="host_name_description">HostName:port</string>
+    <string name="user_name">User Name</string>
+    <string name="user_password">User Password</string>
+    <string name="loading">Loading...</string>
+</resources>

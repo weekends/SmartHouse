@@ -1,0 +1,21 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:defaultValue="192.168.7.2"
+        android:key="host_name"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:summary="@string/host_name_description"
+        android:title="@string/host_name" />
+    <EditTextPreference
+        android:defaultValue="admin"
+        android:key="user_name"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/user_name" />
+    <EditTextPreference
+        android:key="user_password"
+        android:password="true"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/user_password" />
+</PreferenceScreen>
