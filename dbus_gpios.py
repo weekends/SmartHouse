@@ -94,7 +94,7 @@ class Service(dbus.service.Object):
 			timer.start()								# Start timer for LongPress detection
 			self.timer.update( {timer_key:timer} )		# Store timer info to dictionary, need to remove timer if button released
 		else:
-			if ((time_diff >= 100) and (time_diff <= 500)):
+			if ((time_diff >= 50) and (time_diff <= 800)):
 				#print("ShortPressEvent:", gpio)
 				self.ShortPress( gpio )
 
