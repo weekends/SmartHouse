@@ -29,15 +29,21 @@ def application(environ, start_response):
 <center>
 """
 	yield ("<div class=\"blockk\"><b>Текущая дата/время</b><hr><p id=\"date\">%s</p></div>" % datetime.now().strftime("%Y/%m/%d %H:%M:%S")).encode()
-
 	yield '<div class="blockk"><b>Управление освещением</b>&emsp;<a href="/cgi-bin/index_base_page.cgi">Базовый вид</a><hr>\n'.encode()
-	yield '<table width="100%" style=" border-radius: 5px; border-style: solid;"><tr align="center"><td>Управ.</td><td>№</td><td>Название</td></tr>'.encode()
 
 	outstate = []
 	for res in GetOutputsState():
 		outstate.append( (int(res[0]), bool(res[1])) )
 
-	cfg = GetConfigGPIO()
+	try:
+		cfg = GetConfigGPIO()
+		yield '<table width="100%" style=" border-radius: 5px; border-style: solid;"><tr align="center"><td>Управ.</td><td>№</td><td>Название</td></tr>'.encode()
+		for key, value in sorted(cfg['Outputs'].items(), key=lambda t: t[1]):
+			yield ("<tr align=\"center\"><td><b id=out_%s>&nbsp</b></td><td>%s</td><td align=\"left\">%s</td></tr>" % (key, key, value)).encode()
+		yield '</table></div>'.encode()
+	except:
+		yield("Error getting configured data from dbus!...").encode()
+
 	#cfg_outs = cfg['Outputs']
 	#for number, state in outstate:
 	#	if (str(number) in cfg_outs):
@@ -46,9 +52,6 @@ def application(environ, start_response):
 
 	#for parm in cfg:
 	#	if (parm == 'Outputs'):
-	for key, value in sorted(cfg['Outputs'].items(), key=lambda t: t[1]):
-		yield ("<tr align=\"center\"><td><b id=out_%s>&nbsp</b></td><td>%s</td><td align=\"left\">%s</td></tr>" % (key, key, value)).encode()
-	yield '</table></div>'.encode()
 
 	yield """\
 </center>

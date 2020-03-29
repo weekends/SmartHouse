@@ -36,9 +36,14 @@ for order, name, sensor_id, value in sorted(temperatures_sorted):
                         (sensor_id, name, sensor_id, value)
 temperatures_str += '</table></div>'
 
-cfg = GetConfigGPIO()
-cfg_inputs = cfg['Inputs']
-cfg_outputs = cfg['Outputs']
+try:
+	cfg = GetConfigGPIO()
+	cfg_inputs = cfg['Inputs']
+	cfg_outputs = cfg['Outputs']
+except:
+	cfg = {}
+	cfg_inputs = GetInputsState()
+	cfg_outputs = GetOutputsState()
 
 numered_table_string = str().join( map(lambda x:"<td>%d</td>"%x, range(0,8)) )
 
