@@ -16,7 +16,8 @@ import argparse
 import daemon
 
 import logging
-logging.basicConfig(level = logging.INFO, datefmt='%Y/%m/%d %H:%M:%S', format='%(asctime)s %(message)s')
+logging.basicConfig(level = logging.INFO, datefmt='%Y/%m/%d %H:%M:%S', format='%(message)s')
+#logging.basicConfig(level = logging.INFO, datefmt='%Y/%m/%d %H:%M:%S', format='%(asctime)s %(message)s')
 
 
 threads = {}
@@ -67,6 +68,7 @@ class ThreadsChecker:
 def execute_Triggers(config):
 	import dbus_client_logic as DCL
 	import dbus_network_monitor as NetMon
+	import dbus_timers as Timers
 
 	import configparser as ConfigParser
 	cfg = ConfigParser.ConfigParser(inline_comment_prefixes=('#','//'))
@@ -81,16 +83,24 @@ def execute_Triggers(config):
 			inputs  = get_list( cfg.get(section, 'Inputs') )
 			outputs = get_list( cfg.get(section, 'Outputs') )
 			function_str = 'DCL.'+ trigger+'('+ str(inputs) +','+ str(outputs) +', trigger_name="'+ section +'").run'
+		elif (section_type == 'TTrigger'):
+			trigger = cfg.get(section, 'TTrigger')
+			inputs  = get_list( cfg.get(section, 'Inputs') )
+			outputs = get_list( cfg.get(section, 'Outputs') )
+			timeout = cfg.get(section, 'TimeOut', fallback=60)
+			function_str = 'Timers.'+ trigger+'('+ str(inputs) +','+ str(outputs) +','+ timeout +', trigger_name="'+ section +'").run'
 		elif (section_type == 'RouterMonitor'):
 			output = cfg.get(section, 'Output')
 			ip_ping_address = cfg.get(section, 'PingAddress', fallback='8.8.8.8')
 			ping_timeout = cfg.get(section, 'PingTimeout', fallback=2)
+			no_net_count = cfg.get(section, 'NoNetCount', fallback=3)
 			function_str = 'NetMon.'+'RouterMonitor'+'('+ str(output) +\
 														', trigger_name="'+ section + '"' +\
 														', ip_ping_address="' + ip_ping_address + '"' +\
-														', ping_timeout=' + ping_timeout + ').run'
+														', ping_timeout=' + str(ping_timeout) +\
+														', no_net_count=' + str(no_net_count) + ').run'
 		else:
-			loggin.info("Unknown section type: '%s'" % section_type)
+			logging.info("Unknown section type: '%s'" % section_type)
 
 		if (function_str != ''): functions.append( eval( function_str ) )
 
