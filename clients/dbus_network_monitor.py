@@ -9,10 +9,11 @@ import itertools
 import logging
 
 class RouterMonitor(DBusGPIO_Client):
-	def init(self, output, ip_ping_address='8.8.8.8', ping_timeout=2):
+	def init(self, output, ip_ping_address='8.8.8.8', ping_timeout=2, no_net_count=3):
 		super().init( [], output )
 		self.ip_ping_address = ip_ping_address
 		self.ping_timeout = ping_timeout
+		self.no_net_count = no_net_count
 		self.ping_count = 0
 		self.output_pin = self.outputs[0]
 		self.output_pin_state = lambda : self.outputs_state[ self.output_pin ]
@@ -23,6 +24,7 @@ class RouterMonitor(DBusGPIO_Client):
 		logging.info("Relays:%d, OutputState: %s" % (self.output_pin, self.output_pin_state()) )
 		if (self.output_pin_state() == 1):
 			GLib.timeout_add_seconds( 3, lambda: self._Off(self.output_pin) and False )
+			self.ping_count = 0
 
 	def ping_pong(self):
 		pong = net.sr1(net.IP(dst=self.ip_ping_address)/net.ICMP(), timeout=self.ping_timeout, verbose=False)
@@ -30,12 +32,11 @@ class RouterMonitor(DBusGPIO_Client):
 			logging.debug("%s is online" % (pong.src))
 			self.ping_count = 0
 		else:
-			logging.info("Network timeout: %d" % (self.ping_count))
 			self.ping_count += 1
-			if (self.ping_count >= 5):
+			logging.info("Network timeout: %d, %d for reset" % (self.ping_count, self.no_net_count))
+			if (self.ping_count >= self.no_net_count):
 				logging.info("Reboot router...")
 				self._On(self.output_pin)
-				self.ping_count = 0
 		return True		# Return True to be shure, that GLib restart timer function
 
 if __name__ == "__main__":
