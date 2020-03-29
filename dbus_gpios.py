@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+#coding=utf-8
+#-*- coding: utf-8 -*-
 
 import time
 from threading import Timer
@@ -198,12 +200,14 @@ class Service(dbus.service.Object):
 		cfg.read(CFG_FILE)
 		result = {}
 		for key in cfg:
-			parm = {}
-			for item, value in cfg.items(key):
-				parm[item] = value
-			result[key] = parm
+			if (key != "DEFAULT"):
+				parm = {}
+				for item, value in cfg.items(key):
+					parm[item] = str(value)
+				result[key] = parm
 
 		return dbus.Dictionary(result)
+#, signature='sv')
 		#for addr in ow.read_addresses():
 		#	if not cfg.has_option('Termometers', addr):
 		#		cfg.set('Termometers', addr, '')
