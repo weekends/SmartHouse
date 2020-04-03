@@ -85,10 +85,14 @@ def execute_Triggers(config):
 			function_str = 'DCL.'+ trigger+'('+ str(inputs) +','+ str(outputs) +', trigger_name="'+ section +'").run'
 		elif (section_type == 'TTrigger'):
 			trigger = cfg.get(section, 'TTrigger')
-			inputs  = get_list( cfg.get(section, 'Inputs') )
+			if (cfg.get(section, 'Inputs', fallback=None) != None):
+				inputs  = get_list( cfg.get(section, 'Inputs') )
+			else:
+				inputs = []
 			outputs = get_list( cfg.get(section, 'Outputs') )
-			timeout = cfg.get(section, 'TimeOut', fallback=60)
-			function_str = 'Timers.'+ trigger+'('+ str(inputs) +','+ str(outputs) +','+ timeout +', trigger_name="'+ section +'").run'
+			timeout_on = cfg.get(section, 'TimeOut_On', fallback="0")
+			timeout_off = cfg.get(section, 'TimeOut_Off', fallback="60")
+			function_str = 'Timers.'+ trigger+'('+ str(inputs) +','+ str(outputs) +','+ timeout_on +','+ timeout_off +', trigger_name="'+ section +'").run'
 		elif (section_type == 'RouterMonitor'):
 			output = cfg.get(section, 'Output')
 			ip_ping_address = cfg.get(section, 'PingAddress', fallback='8.8.8.8')
