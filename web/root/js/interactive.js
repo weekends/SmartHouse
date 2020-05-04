@@ -32,12 +32,17 @@ function ChangeDisplayStateOff(id)
     document.getElementById(id).innerHTML='<b id=' + id + '><font color="white">'+id+'</font></b>';
 }
 
-function update_output_buttons(id, state)
+function update_output_buttons(id, state, page)
 {
 	ico_size=24
+	if (page == 'configured_outputs.fcgi')
+		ico_size=48
+
 	if (state == 1) state = 0; else state = 1;
 
 	element = document.getElementById('out_'+id);
+
+
 
 	if (element != null) {
 		if (state == 0) ico='/ico/Power_On.png';
@@ -70,10 +75,13 @@ function GetInputStates()
 
 function GetOutputsState()
 {
+	path = window.location.pathname;
+	page = path.split("/").pop();
+
     $.get("/cgi-bin/outputstates.fcgi", function(data, status) {
         var arr = JSON.parse('[' + data + ']')
         for (var i in arr) {
-			update_output_buttons(arr[i][0], arr[i][1]);
+			update_output_buttons(arr[i][0], arr[i][1], page);
         }
     });
 }
