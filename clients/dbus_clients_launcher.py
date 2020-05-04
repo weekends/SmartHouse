@@ -106,7 +106,11 @@ def execute_Triggers(config):
 		else:
 			logging.info("Unknown section type: '%s'" % section_type)
 
-		if (function_str != ''): functions.append( eval( function_str ) )
+		if (function_str != ''):
+			try:
+				functions.append( eval( function_str ) )
+			except:
+				logging.error("Can't execute triger: " + function_str)
 
 	map(Start_Function, functions)  # Execute all functions in functions list
 
