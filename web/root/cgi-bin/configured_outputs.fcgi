@@ -38,7 +38,7 @@ def application(environ, start_response):
 	try:
 		cfg = GetConfigGPIO()
 		#yield '<table width="100%" style=" border-radius: 5px; border-style: solid;"><tr align="center"><td>Управ.</td><td>№</td><td>Название</td></tr>'.encode()
-		yield '<table width="100%" style=" border-radius: 5px; border-style: solid;"><tr align="center"><td>Управ.</td><td>№</td></tr>'.encode()
+		yield '<table width="100%" style=" border-radius: 5px; border-style: solid;"><tr align="center"><td>Управ.</td><td width="10%">№</td></tr>'.encode()
 		for key, value in sorted(cfg['Outputs'].items(), key=lambda t: t[1]):
 			#yield ("<tr align=\"center\"><td><b id=out_%s>&nbsp</b></td><td>%s</td><td align=\"left\"><b id=name_%s>%s</b></td></tr>" % (key, key, key, value)).encode()
 			yield ("""<tr align="center">  <td><b id=out_%s><b id=name_%s>%s</b></b></td>  <td>%s</td></tr>"""
