@@ -41,13 +41,20 @@ function update_output_buttons(id, state, page)
 	if (state == 1) state = 0; else state = 1;
 
 	element = document.getElementById('out_'+id);
-
-
+	name_element = document.getElementById('name_'+id)
+	if (name_element != null) {
+		name = name_element.innerText
+	} else {
+		name = ''
+	}
 
 	if (element != null) {
 		if (state == 0) ico='/ico/Power_On.png';
 		else ico = '/ico/Power_Off.png';
-		element.innerHTML = '<button onclick="change_state('+id+', '+state+')" type="button"><IMG height="'+ico_size+'" width="'+ico_size+'" border="0" src="'+ico+'"></button>';
+//style="vertical-align: middle; text-align: left"
+		element.innerHTML = '<button onclick="change_state('+id+', '+state+')" type="button"><IMG height="'+ico_size+'" width="'+ico_size+'" border="0" src="'+ico+'" >'
++ '<font color="white" id=name_'+id+'>'+name+'</font></button>';
+		//element.innerHTML = '<button onclick="change_state('+id+', '+state+')" type="button"><IMG height="'+ico_size+'" width="'+ico_size+'" border="0" src="'+ico+'"></button>';
 	} else {
 		element = document.getElementById('out_inuse_'+id);
 		if (element != null) {
