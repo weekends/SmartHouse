@@ -57,7 +57,7 @@ function update_output_buttons(id, state, page)
 <button onclick="change_state(${id}, ${state})" type="button">
 	<div class="container">
 		<img height="${ico_height}" width="${ico_width}" border="0" src="${ico}">
-		<div class="top-left"><font color="white" id=name_${id}>${name}</font></div>
+		<div class="middle-left"><font color="white" id=name_${id}>${name}</font></div>
 	</div>
 </button>`;
 		} else {

@@ -12,10 +12,11 @@ img{vertical-align:middle; float:left;}
   text-align: center;
   color: white;
 }
-.top-left {
+.middle-left {
   position: absolute;
   top: 4px;
   left: 52px;
+	font-size:150%;
 }
 
 
