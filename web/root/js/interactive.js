@@ -44,9 +44,9 @@ function update_output_buttons(id, state, page)
 
 	if (element != null) {
 		if (cfg_page == true) {
-			if (state == 0) ico='/ico/On.png';
-			else ico = '/ico/Off.png';
-			ico_width=125
+			if (state == 0) ico='/ico/Power_On.png';
+			else ico = '/ico/Power_Off.png';
+			ico_width=48
 			ico_height=48
 
 			name_element = document.getElementById('name_'+id)
