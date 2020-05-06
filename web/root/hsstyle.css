@@ -8,15 +8,17 @@ button{width:100%; height:100%; padding:0; margin:0; border:0; position:relative
 img{vertical-align:middle; float:left;}
 /* Container holding the image and the text */
 .container {
-  position: relative;
-  text-align: center;
-  color: white;
+	position: relative;
+	text-align: center;
+	color: white;
 }
 .middle-left {
-  position: absolute;
-  top: 4px;
-  left: 52px;
+	position: absolute;
+	top: 4px;
+	left: 52px;
+	text-align:left;
 	font-size:150%;
+	font-weight:500;
 }
 
 
