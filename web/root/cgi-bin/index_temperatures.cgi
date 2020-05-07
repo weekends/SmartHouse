@@ -62,11 +62,11 @@ for i, [number, state] in enumerate(sorted(GetInputsState()), start=0):
 	if (( (i+1) % 8) == 0): gpios_input_state_str += '</tr>'
 gpios_input_state_str += '</table></div>'
 
+#<meta name="viewport" content="width:400px">
 print("""
 <html>
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width:400px">
 <title>Smart House controll</title>
 <link rel="stylesheet" type="text/css" href="/hsstyle.css">
 <style type="text/css" media='(min-width: 810px)'>body{font-size:18px;}.blockk {width: 400px;}</style>
