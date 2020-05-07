@@ -11,7 +11,7 @@ service_gpio = bus.get_object('su.bagna.gpio', "/su/bagna/gpio")
 GetOutputsState = service_gpio.get_dbus_method('GetOutputsState',  'su.bagna.gpio')
 GetConfigGPIO =  service_gpio.get_dbus_method('GetConfigGPIO',  'su.bagna.gpio')
 
-def get_name_and_fnames(str, addons='Power_On.png***Power_Off.png'):
+def get_name_and_fnames(str, addons='Power_On.png;Power_Off.png'):
 	res = str.split('$$$')
 	name = res[0]
 	if (len(res)>1): addons = res[1]

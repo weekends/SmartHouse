@@ -58,7 +58,7 @@ function update_output_buttons(id, state, page)
 			addons_element = document.getElementById('addons_'+id)
 			if (addons_element != null) {
 				addons = addons_element.innerText
-				res = addons.split('***')
+				res = addons.split(';')
 				fon = res[0]
 				foff = res[1]
 				if (res.length > 2) ico_width =res[2]
