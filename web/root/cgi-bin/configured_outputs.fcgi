@@ -21,7 +21,7 @@ def get_name_and_fnames(str, addons='Power_On.png;Power_Off.png'):
 def application(environ, start_response):
 	start_response('200 OK', [('Content-Type', 'text/html; charset=utf-8')])
 	yield """
-<meta name="viewport" content="width=400px">
+<meta name="viewport" content="width=400">
 <title>Smart House controll</title>
 <link rel="stylesheet" type="text/css" href="/hsstyle.css">
 <style type="text/css" media='(min-width: 810px)'>body{font-size:18px;}.blockk {width: 400px;}</style>
