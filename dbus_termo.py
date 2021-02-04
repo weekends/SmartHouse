@@ -30,6 +30,7 @@ class OWTermo(object):
 	owproxy = []
 	addresses = {}
 	timeout = 0
+
 	def __init__(self, owservers=['localhost:4304']):
 		for owserver in owservers:
 			(host, port) = owserver.split(':')
@@ -44,7 +45,7 @@ class OWTermo(object):
 	def read_addresses(self):
 		for owproxy in self.owproxy:
 			for owdir in owproxy.dir('/', bus=False):
-				address = owproxy.read(owdir+'address').decode('ascii')
+				address = owproxy.read(owdir+'address', timeout=3).decode('ascii')
 				if (address[:2] in self.OWTermTypeCodes):
 					self.addresses[address] = (owproxy, owdir)
 		return self.addresses
