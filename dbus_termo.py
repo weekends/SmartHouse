@@ -35,7 +35,7 @@ class OWTermo(object):
 		for owserver in owservers:
 			(host, port) = owserver.split(':')
 			owproxy = protocol.proxy(host=host, port=port, persistent=False)
-			timeout = int( owproxy.read('/settings/timeout/volatile').decode('ascii') )
+			timeout = int( owproxy.read('/settings/timeout/volatile', timeout=5).decode('ascii') )
 			self.owproxy.append(owproxy)
 			if (self.timeout < timeout): self.timeout = timeout
 
@@ -45,9 +45,12 @@ class OWTermo(object):
 	def read_addresses(self):
 		for owproxy in self.owproxy:
 			for owdir in owproxy.dir('/', bus=False):
-				address = owproxy.read(owdir+'address', timeout=3).decode('ascii')
+#				logging.warning("owdir: "+str(owdir))
+				address = owproxy.read(owdir+'address', timeout=5).decode('ascii')
 				if (address[:2] in self.OWTermTypeCodes):
+#					logging.warning( str(owproxy) + str(owdir))
 					self.addresses[address] = (owproxy, owdir)
+		logging.warning( str(self.addresses) )
 		return self.addresses
 
 	def get_path(self, address): return self.addresses[address][1]
@@ -55,7 +58,7 @@ class OWTermo(object):
 	def get_value(self, address):
 		if address in self.addresses:
 			try:
-				return float( self.addresses[address][0].read(self.get_path(address)+'temperature').decode('ascii') )
+				return float( self.addresses[address][0].read(self.get_path(address)+'temperature', timeout=5).decode('ascii') )
 			except:
 				logging.error("Error reading temperature from address: %s" % address)
 		return 255.0
@@ -70,7 +73,7 @@ class OWTermo(object):
 	def set_name(self, address, name):
 		if address in self.addresses:
 			try:
-				self.addresses[address][0].write(self.get_path(address)+'alias', name.encode('ascii'))
+				self.addresses[address][0].write(self.get_path(address)+'alias', name.encode('ascii'), timeout=10)
 			except:
 				logging.error("Error setting name '%s' for address: %s" % (name, address))
 
