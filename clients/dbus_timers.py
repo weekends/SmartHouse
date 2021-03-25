@@ -3,6 +3,7 @@
 from gi.repository import GLib
 
 from dbus_client import DBusGPIO_Client
+from day_night import DayNight
 import itertools
 import logging
 
@@ -71,6 +72,24 @@ class Timer_TimeOuted_Off(Timer_Base):
 			self.clean_timer()
 			if (self.output_controll_pin_state()):
 				self.timer_id = GLib.timeout_add_seconds(self.off_timeout, self.ExecuteWhenTimeIsUP_Off)
+
+class Timer_TimeOuted_Off_DayNight(Timer_Base):
+	""" If Output is On, execute timer for auto Off time timeout.
+		If day, off after 10sec, on night - off after configured timeout """
+	def init(self, inputs, outputs, off_timeout=60, off_timeout_day=60):
+		super().init( inputs, outputs, 0, off_timeout)
+		self.off_timeout_day = off_timeout_day
+		self.dn = DayNight()
+		logging.info("%-40s %-25s Control PIN: %d, Relays:%d, OutputState: %s, TimeOut: %d" % 
+			(self.trigger_name, self.__class__.__name__, self.output_controll_pin, self.output_pin, self.outputs_state[self.output_pin], self.off_timeout) )
+
+	def _OutputChanged(self, num, state):
+		if (num == self.output_controll_pin):
+			self.clean_timer()
+			if (self.output_controll_pin_state()):
+				if (self.dn.isDay()): time_out = self.off_timeout_day
+				else: time_out = self.off_timeout
+				self.timer_id = GLib.timeout_add_seconds(time_out, self.ExecuteWhenTimeIsUP_Off)
 
 
 

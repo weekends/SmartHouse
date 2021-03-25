@@ -92,7 +92,11 @@ def execute_Triggers(config):
 			outputs = get_list( cfg.get(section, 'Outputs') )
 			timeout_on = cfg.get(section, 'TimeOut_On', fallback="0")
 			timeout_off = cfg.get(section, 'TimeOut_Off', fallback="60")
-			function_str = 'Timers.'+ trigger+'('+ str(inputs) +','+ str(outputs) +','+ timeout_on +','+ timeout_off +', trigger_name="'+ section +'").run'
+			if (trigger == 'Timer_TimeOuted_Off_DayNight'):
+				timeout_off_day = cfg.get(section, 'TimeOut_Off_Day', fallback=timeout_off)
+				function_str = 'Timers.'+ trigger+'('+ str(inputs) +','+ str(outputs) +','+ timeout_off +','+ timeout_off_day +', trigger_name="'+ section +'").run'
+			else:
+				function_str = 'Timers.'+ trigger+'('+ str(inputs) +','+ str(outputs) +','+ timeout_on +','+ timeout_off +', trigger_name="'+ section +'").run'
 		elif (section_type == 'RouterMonitor'):
 			output = cfg.get(section, 'Output')
 			ip_ping_address = cfg.get(section, 'PingAddress', fallback='8.8.8.8')
