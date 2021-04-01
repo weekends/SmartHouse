@@ -6,13 +6,14 @@ import tzlocal
 from time import mktime
 
 class DayNight:
-	def __init__(self, lon='27.8000932', lat='53.8135229', pressure=0, horizont='-0:34', elev=240):
+	def __init__(self, lon='27.8000932', lat='53.8135229', pressure=0, horizon='0', elev=240):
+		""" elev -- Geocentric height above sea level (m) """
 		self.place = ephem.Observer()
 		self.place.lon  = str(lon)
 		self.place.lat  = str(lat)
-		self.place.pressure= 0
-		self.place.horizon = '-0:34'
-		self.place.elev = 240
+		self.place.pressure= pressure
+		self.place.horizon = horizon
+		self.place.elev = elev
 		self.time_zone = tzlocal.get_localzone()
 
 	def tz_utc_or_local(self, dt, utc=True):
