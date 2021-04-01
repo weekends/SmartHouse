@@ -2,6 +2,7 @@
 
 import ephem
 from datetime import datetime, date
+import tzlocal
 from time import mktime
 
 class DayNight:
@@ -12,6 +13,17 @@ class DayNight:
 		self.place.pressure= 0
 		self.place.horizon = '-0:34'
 		self.place.elev = 240
+		self.time_zone = tzlocal.get_localzone()
+
+	def tz_utc_or_local(self, dt, utc=True):
+		if (utc): return dt
+		else: return self.time_zone.fromutc(dt)
+
+	def sunrise(self, utc=True):
+		return self.tz_utc_or_local(self.place.previous_rising(ephem.Sun()).datetime(), utc)
+
+	def sunset(self, utc=True):
+		return self.tz_utc_or_local(self.place.next_setting(ephem.Sun()).datetime(), utc)
 
 	def isDay(self, time_delta=0):
 		self.place.date = datetime.fromtimestamp( mktime( date.today().timetuple() ) + 12*60*60 )
@@ -25,6 +37,10 @@ class DayNight:
 
 if __name__ == "__main__":
 	d = DayNight()
+
+	print(d.sunrise(), d.sunset())
+	print(d.sunrise(False).strftime("Восход: %H:%M"), d.sunset(False).strftime("%H:%M") )
+
 	if (d.isDay()):
 		print("Now is day...")
 	else:

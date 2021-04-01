@@ -1,7 +1,7 @@
 function UpdateDateTime()
 {
 	var options = { weekday:'short', month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'numeric', second:'numeric' };
-    var date = new Date(); //.toLocaleString('en-US', options);
+    var date = new Date().toLocaleString('en-GB');//("ru", { year: 'numeric', month: 'short', weekday: 'short'}); //.toLocaleString('en-US', options);
     document.getElementById('date').innerHTML = date;
 }
 

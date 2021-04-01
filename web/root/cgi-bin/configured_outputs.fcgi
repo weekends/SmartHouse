@@ -5,6 +5,7 @@
 from datetime import datetime
 import dbus
 import json
+from common import Common
 
 bus = dbus.SystemBus()
 service_gpio = bus.get_object('su.bagna.gpio', "/su/bagna/gpio")
@@ -20,23 +21,9 @@ def get_name_and_fnames(str, addons='Power_On.png;Power_Off.png'):
 
 def application(environ, start_response):
 	start_response('200 OK', [('Content-Type', 'text/html; charset=utf-8')])
-	yield """
-<meta name="viewport" content="width=400">
-<title>Smart House controll</title>
-<link rel="stylesheet" type="text/css" href="/hsstyle.css">
-<style type="text/css" media='(min-width: 810px)'>body{font-size:18px;}.blockk {width: 400px;}</style>
-<style type="text/css" media="(max-width: 800px) and (orientation:landscape)">body{font-size:8px;}</style>
 
-<script src="/js/jquery-3.1.1.min.js"></script>
-<script src="/js/interactive.js"></script>
-
-</head>
-<body>
-
-<center>
-"""
-	yield ("<div class=\"blockk\"><b>Текущая дата/время</b><hr><p id=\"date\">%s</p></div>" % datetime.now().strftime("%Y/%m/%d %H:%M:%S")).encode()
-	yield '<div class="blockk"><b>Управление освещением</b>&emsp;<a href="/cgi-bin/index_base_page.cgi">Базовый вид</a><hr>\n'.encode()
+	yield Common().common_header()
+	yield '<div class="blockk"><b>Управление освещением</b>&emsp;<a href="/cgi-bin/index_base_page.fcgi">Базовый вид</a><hr>\n'.encode()
 
 	outstate = []
 	for res in GetOutputsState():

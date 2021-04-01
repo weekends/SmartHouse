@@ -11,10 +11,10 @@ def set_output_encoding(codec, errors='strict'):
             line_buffering=sys.stdout.line_buffering)
 set_output_encoding('utf8')
 
+import dbus
+from common import Common
 
 print("Content-Type: text/html\n\n")
-
-import dbus
 bus = dbus.SystemBus()
 service_term = bus.get_object('su.bagna.termo', '/su/bagna/termo')
 service_gpio = bus.get_object('su.bagna.gpio', '/su/bagna/gpio')
@@ -67,28 +67,13 @@ for i, [number, state] in enumerate(sorted(GetInputsState()), start=0):
 	if (( (i+1) % 8) == 0): gpios_input_state_str += '</tr>'
 gpios_input_state_str += '</table></div>'
 
-print("""
-<html>
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=400">
-<title>Smart House controll</title>
-<link rel="stylesheet" type="text/css" href="/hsstyle.css">
-<style type="text/css" media='(min-width: 810px)'>body{font-size:18px;}.blockk {width: 400px;}</style>
-<style type="text/css" media="(max-width: 800px) and (orientation:landscape)">body{font-size:8px;}</style>
-
-<script src="/js/jquery-3.1.1.min.js"></script>
-<script src="/js/interactive.js"></script>
-
-</head>
-<body>
-<center>
-<div class="blockk"><b>Текущая дата/время</b><hr><p id="date">&nbsp</p></div>
-""",
-temperatures_str,
-gpios_output_str,
-gpios_input_state_str,
-"""
+def application(environ, start_response):
+	start_response('200 OK', [('Content-Type', 'text/html; charset=utf-8')])
+	yield Common().common_header()
+	yield temperatures_str.encode()
+	yield gpios_output_str.encode()
+	yield gpios_input_state_str.encode()
+	yield """\
 </center>
 
 <script type="text/javascript">
@@ -101,4 +86,8 @@ InitTimer();
 
 </body>
 </html>
-""")
+"""
+
+if __name__ == '__main__':
+    from flup.server.fcgi import WSGIServer
+    WSGIServer(application).run()
