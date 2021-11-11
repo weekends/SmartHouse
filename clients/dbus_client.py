@@ -117,19 +117,19 @@ class DBusGPIO_Client(object):
 				logging.info("%-40s %-25s Long  press detected: %d" % (self.trigger_name, self.__class__.__name__, num) )
 				self._LongPress(num)
 
-	def _OutputChanged(self, num, state):
+	def _OutputChanged(self, num, state, comments):
 		pass
 
-	def OutputChanged(self, num, state):
+	def OutputChanged(self, num, state, comments=""):
 		if num in self.outputs:
 			logging.debug("%-40s %-25s Output %d switch to: %s" % (self.trigger_name, self.__class__.__name__, num, state))
 			self.outputs_state[num] = state
-			self._OutputChanged(num, state)
+			self._OutputChanged(num, state, comments)
 
 
 	def invert_output(self, num):
-		if (self.outputs_state[num] == 1): self._Off(num)
-		else: self._On(num)
+		if (self.outputs_state[num] == 1): self.Off(num)
+		else: self.On(num)
 
 
 	def flatten(self, l):
@@ -144,6 +144,8 @@ class DBusGPIO_Client(object):
 		except IndexError:
 			return []
 
+	def On(self, num, comments=""): self._On(num, comments)
+	def Off(self, num, comments=""): self._Off(num, comments)
 
 	def run(self):
 		loop = GLib.MainLoop()

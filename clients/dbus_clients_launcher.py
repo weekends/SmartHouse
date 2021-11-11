@@ -94,7 +94,10 @@ def execute_Triggers(config):
 			timeout_off = cfg.get(section, 'TimeOut_Off', fallback="60")
 			if (trigger == 'Timer_TimeOuted_Off_DayNight'):
 				timeout_off_day = cfg.get(section, 'TimeOut_Off_Day', fallback=timeout_off)
-				function_str = 'Timers.'+ trigger+'('+ str(inputs) +','+ str(outputs) +','+ timeout_off +','+ timeout_off_day +', trigger_name="'+ section +'").run'
+				long_press_input= cfg.get(section, 'LongPress_Input', fallback="-1")
+				function_str =  'Timers.'+ trigger+'('+ str(inputs) +','+ str(outputs) +','+ timeout_off +','+ timeout_off_day +\
+								', long_press_input='+str(long_press_input) +\
+								', trigger_name="'+ section +'").run'
 			else:
 				function_str = 'Timers.'+ trigger+'('+ str(inputs) +','+ str(outputs) +','+ timeout_on +','+ timeout_off +', trigger_name="'+ section +'").run'
 		elif (section_type == 'RouterMonitor'):

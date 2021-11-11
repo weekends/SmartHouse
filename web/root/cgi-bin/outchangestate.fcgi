@@ -42,10 +42,10 @@ function CloseMe()
 	try:
 		port = int(form["port"].value)
 		if int(form["state"].value) == 1:
-			OutOn(port)
+			OutOn(port, "web")
 			yield "On"
 		else:
-			OutOff(port)
+			OutOff(port, "web")
 			yield "Off"
 	except ValueError:
 		yield "Error: "+str(port)

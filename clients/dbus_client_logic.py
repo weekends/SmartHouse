@@ -15,9 +15,9 @@ class Simple_OnOff(DBusGPIO_Client):
 
 	def _InputChanged(self, num, state):
 		if (state):
-			self._On(self.single_output)
+			self.On(self.single_output, str(num))
 		else:
-			self._Off(self.single_output)
+			self.Off(self.single_output, str(num))
 
 class Simple_OnOff_invert(DBusGPIO_Client):
 	""" When state changed, invert output """
@@ -55,9 +55,9 @@ class Trigger_OneOn_AllOff(DBusGPIO_Client):
 	def _ShortPress(self, num):
 		if (1 in self.get_outputs_state().values()):
 			for output, state in self.get_outputs_state().items():
-				if (state == 1): self._Off(output)
+				if (state == 1): self.Off(output)
 		else:
-			self._On(self.outputs[0])
+			self.On(self.outputs[0])
 
 
 
@@ -69,7 +69,7 @@ class LongPress_Off(DBusGPIO_Client):
 
 	def _LongPress(self, num):
 		for output, state in self.get_outputs_state().items():
-			if (state == 1): self._Off(output)
+			if (state == 1): self.Off(output)
 
 
 
@@ -81,5 +81,5 @@ class LongPress_On(DBusGPIO_Client):
 
 	def _LongPress(self, num):
 		for output, state in self.get_outputs_state().items():
-			if (state == 0): self._On(output)
+			if (state == 0): self.On(output, str(num))
 

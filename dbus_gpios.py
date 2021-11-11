@@ -131,16 +131,16 @@ class Service(dbus.service.Object):
 	#    print("  shutting down")
 	#    self._loop.quit()
 
-	@dbus.service.method("su.bagna.gpio", in_signature='i', out_signature='b')   # Turn GPIO On
-	def On(self, num):
+	@dbus.service.method("su.bagna.gpio", in_signature='is', out_signature='b')   # Turn GPIO On
+	def On(self, num, comments=""):
 		res = self.outputs[ num // GPIO_board.NUM_GPIO ].set_pin( num  % GPIO_board.NUM_GPIO, True)
-		if (res == True): self.OutputChanged(num, True)
+		if (res == True): self.OutputChanged(num, True, comments)
 		return res
 
-	@dbus.service.method("su.bagna.gpio", in_signature='i', out_signature='b')   # Turn GPIO Off
-	def Off(self, num):
+	@dbus.service.method("su.bagna.gpio", in_signature='is', out_signature='b')   # Turn GPIO Off
+	def Off(self, num, comments=""):
 		res = self.outputs[ num // GPIO_board.NUM_GPIO ].set_pin( num  % GPIO_board.NUM_GPIO, False)
-		if (res == True): self.OutputChanged(num, False)
+		if (res == True): self.OutputChanged(num, False, comments)
 		return res
 
 	@dbus.service.method("su.bagna.gpio", in_signature='', out_signature='v')   # Retrieve available outputs GPIO list
@@ -230,8 +230,8 @@ class Service(dbus.service.Object):
 		return str( number )
 
 	@dbus.service.signal('su.bagna.gpio')
-	def OutputChanged(self, number, state):
-		return str( [number, state] )
+	def OutputChanged(self, number, state, comments=""):
+		return str( [number, state, comments] )
 
 if __name__ == "__main__":
 	Service("This is the service").run()

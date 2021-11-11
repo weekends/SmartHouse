@@ -20,10 +20,10 @@ class RouterMonitor(DBusGPIO_Client):
 		GLib.timeout_add_seconds(60, self.ping_pong)	# Execute ping-pong function after 60seconds
 		logging.info("%-40s %-25s Relay:%d, OutputState: %s" % (self.trigger_name, self.__class__.__name__, self.output_pin, self.output_pin_state()))
 
-	def _OutputChanged(self, num, state):
+	def _OutputChanged(self, num, state, comments):
 		logging.info("Relays:%d, OutputState: %s" % (self.output_pin, self.output_pin_state()) )
 		if (self.output_pin_state() == 1):
-			GLib.timeout_add_seconds( 3, lambda: self._Off(self.output_pin) and False )
+			GLib.timeout_add_seconds( 3, lambda: self.Off(self.output_pin) and False )
 			self.ping_count = 0
 
 	def ping_pong(self):
@@ -36,7 +36,7 @@ class RouterMonitor(DBusGPIO_Client):
 			logging.info("Network timeout: %d, %d for reset" % (self.ping_count, self.no_net_count))
 			if (self.ping_count >= self.no_net_count):
 				logging.info("Reboot router...")
-				self._On(self.output_pin)
+				self.On(self.output_pin)
 		return True		# Return True to be shure, that GLib restart timer function
 
 if __name__ == "__main__":
