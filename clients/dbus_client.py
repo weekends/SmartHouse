@@ -127,9 +127,9 @@ class DBusGPIO_Client(object):
 			self._OutputChanged(num, state, comments)
 
 
-	def invert_output(self, num):
-		if (self.outputs_state[num] == 1): self.Off(num)
-		else: self.On(num)
+	def invert_output(self, num, comments=""):
+		if (self.outputs_state[num] == 1): self.Off(num, comments)
+		else: self.On(num, comments)
 
 
 	def flatten(self, l):
