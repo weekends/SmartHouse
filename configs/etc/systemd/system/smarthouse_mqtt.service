@@ -1,5 +1,5 @@
 [Unit]
-Description=SmartHouse Clients
+Description=SmartHouse DBus2mqtt
 After=network.target dbus_gpio.service mosquitto.service
 
 [Service]
@@ -14,4 +14,4 @@ Environment=PYTHONUNBUFFERED=1
 
 [Install]
 WantedBy=multi-user.target
-Alias=smarthouse_clients.service
+Alias=smarthouse_mqtt.service
