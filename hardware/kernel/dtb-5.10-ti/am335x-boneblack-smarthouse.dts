@@ -1,0 +1,126 @@
+/*
+ * Copyright (C) 2012 Texas Instruments Incorporated - http://www.ti.com/
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+/dts-v1/;
+
+#include "am33xx.dtsi"
+#include "am335x-bone-common-smarthouse.dtsi"
+#include "am335x-boneblack-common.dtsi"
+#include "am335x-bone-common-univ-smarthouse.dtsi"
+
+/* #include "am335x-bone-jtag.dtsi" */
+
+/ {
+	model = "TI AM335x BeagleBone Black - SmartHouse";
+	compatible = "ti,am335x-bone-black", "ti,am335x-bone", "ti,am33xx";
+
+	exclusive-use =
+                /* the pin header uses */
+                "P9.20",        /* i2c2_sda */
+                "P9.19",        /* i2c2_scl */
+                /* the hardware ip uses */
+                "i2c2";
+
+	chosen {
+		base_dtb = "am335x-boneblack-smartouse.dts";
+		base_dtb_timestamp = __TIMESTAMP__;
+	};
+};
+
+&cpu0_opp_table {
+	/*
+	 * All PG 2.0 silicon may not support 1GHz but some of the early
+	 * BeagleBone Blacks have PG 2.0 silicon which is guaranteed
+	 * to support 1GHz OPP so enable it for PG 2.0 on this board.
+	 */
+	oppnitro-1000000000 {
+		opp-supported-hw = <0x06 0x0100>;
+	};
+};
+
+&am33xx_pinmux {
+	mcasp0_pins: mcasp0_pins {
+		pinctrl-single,pins = <
+			AM33XX_IOPAD(0x9ac, PIN_INPUT_PULLUP | MUX_MODE0) /* mcasp0_ahcklx.mcasp0_ahclkx */
+			AM33XX_IOPAD(0x99c, PIN_OUTPUT_PULLDOWN | MUX_MODE2) /* mcasp0_ahclkr.mcasp0_axr2*/
+			AM33XX_IOPAD(0x994, PIN_OUTPUT_PULLUP | MUX_MODE0) /* mcasp0_fsx.mcasp0_fsx */
+			AM33XX_IOPAD(0x990, PIN_OUTPUT_PULLDOWN | MUX_MODE0) /* mcasp0_aclkx.mcasp0_aclkx */
+			AM33XX_IOPAD(0x86c, PIN_OUTPUT_PULLDOWN | MUX_MODE7) /* gpmc_a11.GPIO1_27 */
+		>;
+	};
+
+	uart5_pins: pinmux_uart5_pins {
+		pinctrl-single,pins = <
+			AM33XX_PADCONF(AM335X_PIN_LCD_DATA9, PIN_INPUT_PULLUP, MUX_MODE4)	/* (U2) lcd_data9.uart5_rxd */
+			AM33XX_PADCONF(AM335X_PIN_LCD_DATA8, PIN_OUTPUT_PULLDOWN, MUX_MODE4)	/* (U1) lcd_data8.uart5_txd */
+		>;
+	};
+};
+
+&i2c1 {
+	/* i2c1 is numbered correctly */
+	status = "okay";
+	clock-frequency = <400000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c1_pins>;
+	symlink = "bone/i2c/1";
+};
+
+&i2c2 {
+	/* i2c1 is numbered correctly */
+	status = "okay";
+	clock-frequency = <400000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c2_pins>;
+	symlink = "bone/i2c/2";
+};
+
+/ {
+	i2c3 {
+		compatible = "i2c-gpio";
+		gpios = <&gpio2 2 GPIO_ACTIVE_HIGH /* sda */
+			 &gpio2 5 GPIO_ACTIVE_HIGH /* scl */
+		>;
+		i2c-gpio,delay-us = <2>;        /* ~100 kHz */
+		#address-cells = <1>;
+		#size-cells = <0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&i2c3_pins>;
+		status = "okay";
+		symlink = "bone/i2c/3";
+
+		rtc@68 {
+			compatible = "maxim,ds1307";
+			reg = <0x68>;
+		};
+
+		rtc_eeprom: rtc_eeprom@50 {
+			compatible = "at,24c32";
+			reg = <0x50>;
+		};
+	};
+
+	aliases {
+		eeprom  = &baseboard_eeprom;
+		eeprom0 = &cape_eeprom0;
+		eeprom1 = &cape_eeprom1;
+		eeprom2 = &cape_eeprom2;
+		eeprom3 = &cape_eeprom3;
+		eeprom4 = &cape_eeprom4;
+		eeprom5 = &cape_eeprom5;
+		eeprom6 = &cape_eeprom6;
+		eeprom7 = &cape_eeprom7;
+		eeprom8 = &cape_eeprom8;
+	};
+};
+
+&uart5 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart5_pins>;
+
+	status = "okay";
+};
