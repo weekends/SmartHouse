@@ -91,14 +91,16 @@ class EEPROM(object):
 class CapeDetector(object):
 	capes=[]
 
-	gpio_cape_addresses = [ [1, 2, 0x54, 0x20, 0x21, "P8_43", "P8_44"],	# Cape 1, i2c Bus 2, EEaddr: 0x54, pca9555: 0x20, 0x21, Int: P8_43, P8_44
-							[2, 2, 0x55, 0x22, 0x23, "P8_41", "P8_42"],	# Cape 2, i2c Bus 2, EEaddr: 0x55, pca9555: 0x22, 0x23, Int: P8_41, P8_42
-							[3, 2, 0x56, 0x24, 0x25, "P8_39", "P8_40"],	# Cape 3, i2c Bus 2, EEaddr: 0x56, pca9555: 0x24, 0x25, Int: P8_39, P8_40
-							[4, 2, 0x57, 0x26, 0x27, "P8_34", "P8_36"],	# Cape 4, i2c Bus 2, EEaddr: 0x57, pca9555: 0x26, 0x27, Int: P8_34, P8_36
-							[5, 1, 0x54, 0x20, 0x21, "P8_31", "P8_32"],	# Cape 5, i2c Bus 1, EEaddr: 0x54, pca9555: 0x20, 0x21, Int: P8_31, P8_32
-							[6, 1, 0x55, 0x22, 0x23, "P8_29", "P8_30"],	# Cape 6, i2c Bus 1, EEaddr: 0x55, pca9555: 0x22, 0x23, Int: P8_29, P8_30
-							[7, 1, 0x56, 0x24, 0x25, "P8_27", "P8_28"],	# Cape 7, i2c Bus 1, EEaddr: 0x56, pca9555: 0x24, 0x25, Int: P8_27, P8_28
-							[8, 1, 0x57, 0x26, 0x27, "P8_19", "P8_26"] ]# Cape 8, i2c Bus 1, EEaddr: 0x57, pca9555: 0x26, 0x27, Int: P8_19, P8_26
+	gpio_cape_addresses = [
+		[1, 2, 0x54, 0x20, 0x21, "P8_43", "P8_44"],	# Cape 1, i2c Bus 2, EEaddr: 0x54, pca9555: 0x20, 0x21, Int: P8_43, P8_44
+		[2, 2, 0x55, 0x22, 0x23, "P8_41", "P8_42"],	# Cape 2, i2c Bus 2, EEaddr: 0x55, pca9555: 0x22, 0x23, Int: P8_41, P8_42
+		[3, 2, 0x56, 0x24, 0x25, "P8_39", "P8_40"],	# Cape 3, i2c Bus 2, EEaddr: 0x56, pca9555: 0x24, 0x25, Int: P8_39, P8_40
+		[4, 2, 0x57, 0x26, 0x27, "P8_34", "P8_36"],	# Cape 4, i2c Bus 2, EEaddr: 0x57, pca9555: 0x26, 0x27, Int: P8_34, P8_36
+		[5, 1, 0x54, 0x20, 0x21, "P8_31", "P8_32"],	# Cape 5, i2c Bus 1, EEaddr: 0x54, pca9555: 0x20, 0x21, Int: P8_31, P8_32
+		[6, 1, 0x55, 0x22, 0x23, "P8_29", "P8_30"],	# Cape 6, i2c Bus 1, EEaddr: 0x55, pca9555: 0x22, 0x23, Int: P8_29, P8_30
+		[7, 1, 0x56, 0x24, 0x25, "P8_27", "P8_28"],	# Cape 7, i2c Bus 1, EEaddr: 0x56, pca9555: 0x24, 0x25, Int: P8_27, P8_28
+		[8, 1, 0x57, 0x26, 0x27, "P8_19", "P8_26"]	# Cape 8, i2c Bus 1, EEaddr: 0x57, pca9555: 0x26, 0x27, Int: P8_19, P8_26
+	]
 
 	def __init__(self):
 		eeprom = EEPROM()
@@ -211,6 +213,7 @@ class GPIOmapper(object):
 if __name__ == "__main__":
 	capes = CapeDetector()
 
+	print("All founded capes:")
 	for cape in capes.get():
 		print(cape.get_slot(), cape.get_type(), cape.get_gpio_i2c_address() )
 
