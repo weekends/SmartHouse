@@ -3,9 +3,9 @@ Description=SmartHouse init owfs service
 After=network.target
 
 [Service]
-PIDFile=/var/run/smarthouse_owfs.pid
-ExecStart=/usr/bin/owserver -P /var/run/smarthouse_owfs.pid -d /dev/ttyS5 --i2c=ALL:ALL -p 4304
-# ExecStart=/usr/bin/owserver -P /var/run/smarthouse_owfs.pid -d /dev/ttyS5 --i2c=/dev/i2c-1 -p 4304
+PIDFile=/run/smarthouse_owfs.pid
+ExecStart=/usr/bin/owserver -P /run/smarthouse_owfs.pid -d /dev/ttyS5 --i2c=ALL:ALL -p 4304
+# ExecStart=/usr/bin/owserver -P /run/smarthouse_owfs.pid -d /dev/ttyS5 --i2c=/dev/i2c-1 -p 4304
 NotifyAccess=main
 KillMode=process
 Restart=on-failure

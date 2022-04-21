@@ -6,21 +6,27 @@ Base board fot BBB is custom, main futures are - i2c expander, 1-wire provider, 
 Also, several GPIO or 1-wire boards can be inserted to Base Board via i2c bus. All extending boards must has EEPROM to determinate type of board.
 
 Required packages:
-    python3-dbus
-    python3-twisted
-    python3-configobj		# for gpio_detector.py
-    python3-daemon
-    python3-psutil
-    python3-pip
+    apt-get install \
+        python3-dbus
+        python3-twisted
+        python3-configobj		# for gpio_detector.py
+        python3-daemon
+        python3-psutil
+        python3-pip
+        python3-ephem		# for web ui
+        python3-tzlocal		# for web ui
+        python3-paho-mqtt
+        python3-yaml
+        apache2
+        libapache2-mod-fcgid	# For FastCGI web with apache2
+        mosquitto		# For mqtt support
+        owserver owfs-fuse	# For 1-wire support
 
     pip3 install Adafruit_GPIO
     pip3 install Adafruit_BBIO
     pip3 install flup		# For fast CGI
     pip3 install pyownet	# 1-wire requires:
 
-
-For FastCGI web with apache2, install:
-    apt-get install libapache2-mod-fcgid
 
 Configure apache2:
     dpkg-reconfigure locales
@@ -34,10 +40,24 @@ Configure apache2:
     execute configure_apache2.sh
 	to access web page, use http://url:80
 
+
+Enable services startup:
+    systemctl enable dbus_gpio.service
+    systemctl enable dbus_termo.service
+    systemctl enable smarthouse_clients.service
+    systemctl enable smarthouse_mqtt.service
+    systemctl enable smarthouse_owfs_mount.service
+    systemctl enable smarthouse_owfs.service
+    systemctl enable apache2
+    systemctl enable mosquitto
+    systemctl disable owserver
+
+
 Other configurations:
     timedatectl set-timezone Europe/Minsk	# Setup timezone
     connmanctl services
     connmanctl config <service> --ipv4 manual <ip_addr> <netmask> <gateway> --nameservers <dns_server>
+
 
 Links:
 	Python 1wire library: https://pyownet.readthedocs.io/en/latest/protocol.html
