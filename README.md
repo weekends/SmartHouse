@@ -36,7 +36,8 @@ Configure apache2:
 
 Other configurations:
     timedatectl set-timezone Europe/Minsk	# Setup timezone
-
+    connmanctl services
+    connmanctl config <service> --ipv4 manual <ip_addr> <netmask> <gateway> --nameservers <dns_server>
 
 Links:
 	Python 1wire library: https://pyownet.readthedocs.io/en/latest/protocol.html
