@@ -1192,6 +1192,13 @@
 		pinctrl-single,pins = <0x1b0  0x37>; };     /* Mode 7, Pull-Up, RxActive */
 	A15_gpio_pd_pin: pinmux_A15_gpio_pd_pin {
 		pinctrl-single,pins = <0x1b0  0x27>; };     /* Mode 7, Pull-Down, RxActive */
+
+	uart5_pins: pinmux_uart5_pins {
+		pinctrl-single,pins = <
+			AM33XX_PADCONF(AM335X_PIN_LCD_DATA9, PIN_INPUT_PULLUP, MUX_MODE4)	/* (U2) lcd_data9.uart5_rxd */
+			AM33XX_PADCONF(AM335X_PIN_LCD_DATA8, PIN_OUTPUT_PULLDOWN, MUX_MODE4)	/* (U1) lcd_data8.uart5_txd */
+		>;
+	};
 };
 
 
@@ -1226,7 +1233,7 @@
 &uart5 {
 	status = "okay";
 	pinctrl-names = "default";
-	pinctrl-0 = <>;
+	pinctrl-0 = <&uart5_pins>;
 	symlink = "bone/uart/5";
 };
 
