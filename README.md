@@ -57,7 +57,14 @@ Other configurations:
     timedatectl set-timezone Europe/Minsk	# Setup timezone
     connmanctl services
     connmanctl config <service> --ipv4 manual <ip_addr> <netmask> <gateway> --nameservers <dns_server>
+	Example:
+	    connmanctl services		# Get services list
+	    connmanctl config ethernet_78a504ca00b1_cable --ipv4 manual 192.168.1.145 255.255.255.255 192.168.1.8 --nameservers 192.168.1.8 8.8.8.8 8.8.4.4
 
+# For upnp descovery install:
+    apt-get install libgupnp-1.0-dev
+    git clone https://github.com/victronenergy/simple-upnpd.git
+    compile and cp simple-upnpd to /usr/local/sbin/
 
 Links:
 	Python 1wire library: https://pyownet.readthedocs.io/en/latest/protocol.html
