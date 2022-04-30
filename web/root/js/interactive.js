@@ -1,6 +1,6 @@
 function UpdateDateTime()
 {
-	var options = { weekday:'short', month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'numeric', second:'numeric' };
+    var options = { weekday:'short', month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'numeric', second:'numeric' };
     var date = new Date().toLocaleString('en-GB');//("ru", { year: 'numeric', month: 'short', weekday: 'short'}); //.toLocaleString('en-US', options);
     document.getElementById('date').innerHTML = date;
 }
@@ -9,30 +9,30 @@ function UpdateDateTime()
 function GetTemperaturies()
 {
     $.get("/cgi-bin/temperatures.fcgi", function(data, status) {
-		if (status == 'success') {
-        	var arr = JSON.parse('[' + data + ']')
-        	for (var i in arr) {
-            	element = document.getElementById(arr[i][0])
-				if (element != null) element.innerHTML=arr[i][1];
-        	}
-		} else {
-			alert("Ошибка получения температуры: "+status+data)
+	if (status == 'success') {
+		var arr = JSON.parse('[' + data + ']')
+		for (var i in arr) {
+			element = document.getElementById(arr[i][0])
+			if (element != null) element.innerHTML=arr[i][1];
 		}
+	} else {
+		alert("Ошибка получения температуры: "+status+data)
+	}
     }) .fail(function(data) {
-    	//alert( "Скрипт получения температуры вернул ошибку либо не найден.");
-	});
+	//alert( "Скрипт получения температуры вернул ошибку либо не найден.");
+    });
 }
 
 
 function ChangeDisplayStateOn(id)
 {
 	element = document.getElementById(id)
-    if (element != null) element.innerHTML='<b id=' + id + '><font color="red">'+id+'</font></b>';
+	if (element != null) element.innerHTML='<b id=' + id + '><font color="red">'+id+'</font></b>';
 }
 function ChangeDisplayStateOff(id)
 {
 	element = document.getElementById(id)
-    if (element != null) element.innerHTML='<b id=' + id + '><font color="white">'+id+'</font></b>';
+	if (element != null) element.innerHTML='<b id=' + id + '><font color="white">'+id+'</font></b>';
 }
 
 function update_output_buttons(id, state, page)
@@ -98,16 +98,16 @@ function update_output_buttons(id, state, page)
 
 function GetInputStates()
 {
-    $.get("/cgi-bin/inputstates.fcgi", function(data, status){
-        var arr = JSON.parse('[' + data + ']')
-        for (var i in arr) {
+	$.get("/cgi-bin/inputstates.fcgi", function(data, status){
+		var arr = JSON.parse('[' + data + ']')
+		for (var i in arr) {
 			if (arr[i][1] == 1) {
 				ChangeDisplayStateOn(arr[i][0]);
-            } else {
+			} else {
 				ChangeDisplayStateOff(arr[i][0]);
-            }
-        }
-    });
+			}
+		}
+	});
 }
 
 function GetOutputsState()
@@ -115,12 +115,12 @@ function GetOutputsState()
 	path = window.location.pathname;
 	page = path.split("/").pop();
 
-    $.get("/cgi-bin/outputstates.fcgi", function(data, status) {
-        var arr = JSON.parse('[' + data + ']')
-        for (var i in arr) {
+	$.get("/cgi-bin/outputstates.fcgi", function(data, status) {
+		var arr = JSON.parse('[' + data + ']')
+		for (var i in arr) {
 			update_output_buttons(arr[i][0], arr[i][1], page);
-        }
-    });
+		}
+	});
 }
 
 function change_state(pin, state)
@@ -139,17 +139,16 @@ function change_state(pin, state)
 
 function GettingGPIOStates()
 {
-    GetOutputsState()
-    GetInputStates()
+	GetOutputsState()
+	GetInputStates()
 }
 
 function InitTimer()
 {
-    GetTemperaturies();
-    GettingGPIOStates();
+	GetTemperaturies();
+	GettingGPIOStates();
 
-    setInterval('UpdateDateTime()',    1000);
-    setInterval('GettingGPIOStates()', 1000);
-    setInterval('GetTemperaturies()',  5000);
+	setInterval('UpdateDateTime()',    1000);
+	setInterval('GettingGPIOStates()', 1000);
+	setInterval('GetTemperaturies()',  5000);
 }
-

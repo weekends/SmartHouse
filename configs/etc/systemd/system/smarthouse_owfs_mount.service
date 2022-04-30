@@ -3,8 +3,8 @@ Description=SmartHouse mount owfs directory
 After=network.target smarthouse_owfs.service
 
 [Service]
-PIDFile=/var/run/smarthouse_owfs_mount.pid
-ExecStart=/usr/lib/owfs/owfs -P /var/run/smarthouse_owfs_mount.pid -w -m /mnt/1wire --server 127.0.0.1:4304
+PIDFile=/run/smarthouse_owfs_mount.pid
+ExecStart=/usr/lib/owfs/owfs -P /run/smarthouse_owfs_mount.pid -w -m /mnt/1wire --server 127.0.0.1:4304
 NotifyAccess=main
 KillMode=process
 Restart=on-failure

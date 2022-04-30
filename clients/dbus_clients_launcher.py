@@ -67,7 +67,7 @@ class ThreadsChecker:
 
 def execute_Triggers(config):
 	import dbus_client_logic as DCL
-	import dbus_network_monitor as NetMon
+#	import dbus_network_monitor as NetMon
 	import dbus_timers as Timers
 
 	import configparser as ConfigParser

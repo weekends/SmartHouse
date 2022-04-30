@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+  <specVersion>
+    <major>1</major>
+    <minor>0</minor>
+  </specVersion>
+
+  <device>
+    <deviceType>urn:schemas-upnp-org:device:Basic:1</deviceType>
+      <friendlyName>SmartHouse controller</friendlyName>
+      <manufacturer>Grigory Milev</manufacturer>
+      <manufacturerURL>https://github.com/weekends/SmartHouse</manufacturerURL>
+      <modelName>SmwatHouse</modelName>
+      <modelNumber>1.0</modelNumber>
+      <modelURL>http://192.168.1.4</modelURL>
+      <presentationURL>/</presentationURL>
+      <UDN>uuid:su.bagna</UDN>
+  </device>
+</root>
