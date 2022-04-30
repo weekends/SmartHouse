@@ -1,0 +1,3 @@
+#!/bin/sh
+
+dbus-send --type=method_call --print-reply --system --dest=su.bagna.termo /su/bagna/termo su.bagna.termo.GetTemperatures
