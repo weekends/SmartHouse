@@ -1,6 +1,7 @@
 [Unit]
 Description=SmartHouse 1wire Termometers to DBus converter
 After=dbus.service smarthouse_owfs.service smarthouse_owfs_mount.service
+Before=apache2.service
 
 [Service]
 Type=dbus

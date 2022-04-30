@@ -1,5 +1,7 @@
 [Unit]
 Description=SmartHouse GPIO to DBus converter
+After=dbus.service
+Before=apache2.service
 
 [Service]
 Type=dbus
