@@ -78,6 +78,15 @@ class HA_config():
 		self.append('payload_off', 'OFF')
 		self.append('payload_on', 'ON')
 
+	def set_cfg_sensor(self):
+		self.cfg_topic = '%s/switch/%s/%s/config'%(self.mqtt_cfg.get_tha(), self.ha_dev.get_model().replace(' ', '_'), 'sensor_'+self.uid)
+		self.cmd_topic = self.mqtt_cfg.get_tb()+'/'+self.ha_dev.get_model()+'/'+self.name_topics+'/set'
+		self.json_attr_topic = self.mqtt_cfg.get_tb()+'/'+self.ha_dev.get_model()+'/'+self.name_topics+'/set'
+		self.append('command_topic', self.get_cmd_topic())
+#		self.append('json_attributes_topic', self.json_attr_topic)
+		self.append('payload_off', 'OFF')
+		self.append('payload_on', 'ON')
+
 if __name__ == "__main__":
 	mqtt_cfg = MQTT_config('smarthouse')
 	ha_dev = HA_device(mqtt_cfg, 'Weekend', 'DBus Relays', 'DBus Relay', '0.0.2')

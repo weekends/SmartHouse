@@ -69,8 +69,8 @@ class MQTT_Switches(DBusGPIO_Client):
 
 	def discovery_send(self):
 		for out, dev in self.ha_cfg:
-			if out == 42:
-				print(dev.cfg_topic)
+			#if out == 42:
+			#	print(dev.cfg_topic)
 			self.mqtt_client.publish(dev.cfg_topic, json.dumps(dev.get_cfg()), retain=True)
 			time.sleep(0.2)
 		#self.dev_offline()
