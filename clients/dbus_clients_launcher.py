@@ -117,7 +117,7 @@ def execute_Triggers(config):
 			try:
 				functions.append( eval( function_str ) )
 			except:
-				logging.error("Can't execute triger: " + function_str)
+				logging.error("Can't execute trigger: " + function_str)
 
 	map(Start_Function, functions)  # Execute all functions in functions list
 
