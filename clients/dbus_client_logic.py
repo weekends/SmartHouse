@@ -83,3 +83,13 @@ class LongPress_On(DBusGPIO_Client):
 		for output, state in self.get_outputs_state().items():
 			if (state == 0): self.On(output, str(num))
 
+class LongPress_Invert(DBusGPIO_Client):
+	""" Long press invert output state """
+	def init(self, inputs, outputs):
+		super().init( inputs, outputs )
+		self.single_output = self.outputs[0]
+		logging.info("%-40s %-25s Switch:%s, Relays:%d, OutputState: %s" % (self.trigger_name, self.__class__.__name__, self.inputs, self.single_output, self.outputs_state[self.single_output]) )
+
+	def _LongPress(self, num):
+		self.invert_output(self.single_output)
+
