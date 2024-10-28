@@ -79,7 +79,7 @@ class HA_config():
 		self.append('payload_on', 'ON')
 
 	def set_cfg_sensor(self):
-		self.cfg_topic = '%s/switch/%s/%s/config'%(self.mqtt_cfg.get_tha(), self.ha_dev.get_model().replace(' ', '_'), 'sensor_'+self.uid)
+		self.cfg_topic = '%s/sensor/%s/%s/config'%(self.mqtt_cfg.get_tha(), self.ha_dev.get_model().replace(' ', '_'), 'sensor_'+self.uid)
 		self.cmd_topic = self.mqtt_cfg.get_tb()+'/'+self.ha_dev.get_model()+'/'+self.name_topics+'/set'
 		self.json_attr_topic = self.mqtt_cfg.get_tb()+'/'+self.ha_dev.get_model()+'/'+self.name_topics+'/set'
 		self.append('command_topic', self.get_cmd_topic())
