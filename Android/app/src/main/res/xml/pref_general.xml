@@ -14,7 +14,6 @@
         android:title="@string/user_name" />
     <EditTextPreference
         android:key="user_password"
-        android:password="true"
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="@string/user_password" />
