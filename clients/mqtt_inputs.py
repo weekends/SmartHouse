@@ -34,7 +34,7 @@ class MQTT_Sensors(DBusGPIO_Client):
 
 		self.ha_cfg = []
 		for inp in inputs:
-			self.ha_cfg.append( [inp, HA_config(self.mqtt_cfg, self.ha_dev, inputs[inp], inp, icon='mdi:gesture-double-tap', dev_type='sensor')] )
+			self.ha_cfg.append( [inp, HA_config(self.mqtt_cfg, self.ha_dev, inputs[inp], inp, icon='mdi:gesture-double-tap', dev_type='switch')] )
 
 
 		self.mqtt_client = MQTT.Client(str(self.trigger_name))	#create new instance
